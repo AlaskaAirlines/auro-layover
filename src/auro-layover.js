@@ -1,14 +1,14 @@
 /* eslint-disable */
-import { html, LitElement, nothing } from "lit";
+import { LitElement, html  } from "lit";
 import { createRef, ref } from 'lit/directives/ref.js';
 
-import { PopoverPositioner } from "@auro-formkit/utils";
+import { PopoverPositioner } from "@aurodesignsystem/auro-library/scripts/runtime/popover/positioner.js";
 import { FocusTrap } from "@aurodesignsystem/auro-library/scripts/runtime/FocusTrap/FocusTrap.mjs";
+import { StringBoolean } from "@aurodesignsystem/auro-library/scripts/runtime/lit-converters/string-boolean.js";
 
 import AuroLibraryRuntimeUtils from '@aurodesignsystem/auro-library/scripts/utils/runtimeUtils.mjs';
-import { StringBoolean } from "./StringBoolean.converter";
 
-import styles from './styles/style-css.js';
+import styles from './styles/style.scss';
 
 const _DEFAULTS = {
   type: "manual",
@@ -592,7 +592,7 @@ export class AuroLayover extends LitElement {
      * @private
      */
     _detachInput() {
-      const input = this.input;
+      const {input} = this;
       if (input) {
         input.removeEventListener('focus', this._handleInputFocus);
         input.removeEventListener('input', this._handleInputChange);
