@@ -1,0 +1,1 @@
+`<auro-layover>` is an [HTML custom element](https://developer.mozilla.org/en-US/docs/Web/Web_Components/Using_custom_elements) that combines the functionality of html popover spec and floating-ui&#x27;s js library into one utility.
