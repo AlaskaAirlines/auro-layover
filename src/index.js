@@ -1,3 +1,3 @@
-import { AuroLayover } from './auro-layover.js';
+import { AuroLayover } from "./auro-layover.js";
 
-export { AuroLayover }
+export { AuroLayover };
