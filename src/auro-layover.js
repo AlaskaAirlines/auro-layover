@@ -7,6 +7,7 @@ import { html, LitElement } from "lit";
 import { createRef, ref } from "lit/directives/ref.js";
 
 import styles from "./styles/style.scss";
+import { classMap } from "lit/directives/class-map.js";
 
 const _DEFAULTS = {
   type: "manual",
@@ -73,6 +74,12 @@ export class AuroLayover extends LitElement {
     // A reference to the popover element itself
     this._popoverRef = createRef();
 
+    // A reference to the internal arrow element
+    this._arrowElRef = createRef();
+
+    // A reference to the internal arrow slot element
+    this._arrowSlotRef = createRef();
+
     // The internal button that wraps the trigger slot (dialog and dropdown behaviors)
     this._buttonRef = createRef();
 
@@ -136,9 +143,6 @@ export class AuroLayover extends LitElement {
       /** A reference to the input to attach to for input behavior */
       input: { type: Object, state: true },
 
-      /** A reference to the arrow element (if desired) */
-      arrowEl: { type: Object, reflect: false },
-
       /** Whether or not to use the hide behavior (hides element when trigger is not visible) */
       useHide: { type: String, reflect: false, converter: StringBoolean },
 
@@ -184,6 +188,14 @@ export class AuroLayover extends LitElement {
    */
   get popover() {
     return this._popoverRef.value;
+  }
+
+  /**
+   * A reference to the popover component's internal arrow element
+   * @returns {HTMLElement} The arrow element that points to the trigger
+   */
+  get arrow() {
+    return this._arrowElRef.value;
   }
 
   /** PUBLIC METHODS **/
@@ -320,24 +332,11 @@ export class AuroLayover extends LitElement {
    * @returns {object}
    */
   get _dropdownOptions() {
-    const {
-      placement,
-      offset,
-      inline,
-      arrowEl,
-      useHide,
-      useAutoPlacement,
-      useFlip,
-    } = this;
+    const { placement, offset, inline, useHide, useAutoPlacement, useFlip } = this;
     return {
       ..._POSITIONER_DEFAULTS,
-      placement,
-      offset,
-      inline,
-      arrowEl,
-      useHide,
-      useAutoPlacement,
-      useFlip,
+      arrowEl: this.arrow,
+      placement, offset, inline, useHide, useAutoPlacement, useFlip
     };
   }
 
@@ -883,25 +882,57 @@ export class AuroLayover extends LitElement {
         `;
   }
 
+  get _arrowDirection() {
+    const directionsByPlacement = {
+      "top": "down",
+      "top-start": "down",
+      "top-end": "down",
+      "bottom": "up",
+      "bottom-start": "up",
+      "bottom-end": "up",
+      "left": "right",
+      "left-start": "right",
+      "left-end": "right",
+      "right": "left",
+      "right-start": "left",
+      "right-end": "left",
+    };
+
+    return directionsByPlacement[this.placement];
+  }
+
   /**
    * Renders the popover element
    * @private @returns {TemplateResult}
    */
   _renderPopover() {
+
+    const arrowClasses = {
+      "popover-arrow": true,
+      [`direction-${this._arrowDirection}`]: true,
+    };
+
     return html`
+      <div 
+        part="popover"
+        ${ref(this._popoverRef)}
+        popover="${this.type}"
+        id="popover"
+        role="dialog"
+        aria-label="${this.title}"
+        @beforetoggle=${this._handlePopoverToggle.bind(this)}
+        tabindex="-1"
+      >
         <div 
-          part="popover"
-          ${ref(this._popoverRef)}
-          popover="${this.type}"
-          id="popover"
-          role="dialog"
-          aria-label="${this.title}"
-          @beforetoggle=${this._handlePopoverToggle.bind(this)}
-          tabindex="-1"
+          ${ref(this._arrowElRef)}
+          class="${classMap(arrowClasses)}"
+          part="arrow"
         >
-          <slot></slot>
+          <slot name="arrow" ${ref(this._arrowSlotRef)}></slot>
         </div>
-      `;
+        <slot></slot>
+      </div>
+    `;
   }
 
   render() {

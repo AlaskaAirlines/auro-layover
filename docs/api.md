@@ -6,7 +6,7 @@ AuroLayover is a reusable web component written using Lit.
 
 | Property           | Attribute          | Modifiers | Type                | Description                                      |
 |--------------------|--------------------|-----------|---------------------|--------------------------------------------------|
-| `arrowEl`          | `arrowEl`          |           | `object`            | A reference to the arrow element (if desired)    |
+| `arrow`            |                    | readonly  | `HTMLElement`       | A reference to the popover component's internal arrow element |
 | `behavior`         | `behavior`         |           | `string`            | The behavior of the popover, "dialog", "dialog-fullscreen", "dropdown", "tooltip", or "input", "input-fullscreen", "input-dropdown" |
 | `button`           |                    | readonly  | `HTMLButtonElement` | A reference to the popover component's internal button element (trigger) |
 | `inline`           | `inline`           |           | `string`            | Whether or not the layover should try to align to an inline element like a hyperlink |

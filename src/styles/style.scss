@@ -11,6 +11,31 @@
   pointer-events: none;
 }
 
+[popover] {
+  position: absolute;
+  
+  .popover-arrow {
+    position: absolute;
+
+    &.direction-down {
+      bottom: 0;
+      transform: translateY(100%);
+    }
+    &.direction-up {
+      top: 0;
+      transform: translateY(-100%);
+    }
+    &.direction-left {
+      left: 0;
+      transform: translateX(-100%);
+    }
+    &.direction-right {
+      right: 0;
+      transform: translateX(100%);
+    }
+  }
+}
+
 [popovertarget] {
   margin: 0;
   width: fit-content;
