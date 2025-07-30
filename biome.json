@@ -56,7 +56,7 @@
   },
   "html": {
     "formatter": {
-      "enabled": true
+      "enabled": false
     }
   }
 }
