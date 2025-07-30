@@ -114,6 +114,7 @@
     ]
   },
   "exports": {
+    "./package.json": "./package.json",
     "./readme.md": "./README.md",
     ".": "./dist/registered.js",
     "./demo/*.md": "./demo/*.md",
