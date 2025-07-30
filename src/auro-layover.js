@@ -365,6 +365,8 @@ export class AuroLayover extends LitElement {
    * Gets the trigger element in the slot
    */
   get _triggerElInSlot() {
+    if (!this._triggerSlot) return undefined;
+
     // Get the assigned nodes from the trigger slot
     const nodes = this._triggerSlot.assignedNodes({ flatten: true });
 
