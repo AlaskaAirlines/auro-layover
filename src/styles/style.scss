@@ -13,11 +13,13 @@
 
 [popovertarget] {
   margin: 0;
-  width: 100%;
+  width: fit-content;
   font-size: inherit;
   text-align: inherit;
   font: inherit;
-  line-height: inherit;
+
+  // This nullifies the height added by line-height
+  display: inline-flex;
 }
 
 :host([behavior$="-fullscreen"]) {
