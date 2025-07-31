@@ -1,4 +1,4 @@
-[popover], [popovertarget] {
+.popover, .popover-trigger {
   outline: inherit;
   background: inherit;
   border: inherit;
@@ -6,13 +6,13 @@
   overflow: visible;
 }
 
-:host(:not([shown])) [popover] {
+:host(:not([shown])) .popover {
   opacity: 0;
   pointer-events: none;
+  position: absolute;
 }
 
-[popover] {
-  position: absolute;
+.popover {
   
   .popover-arrow {
     position: absolute;
@@ -36,7 +36,7 @@
   }
 }
 
-[popovertarget] {
+.popover-trigger {
   margin: 0;
   width: fit-content;
   font-size: inherit;

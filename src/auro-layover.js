@@ -1,15 +1,19 @@
-import { FocusTrap } from "@aurodesignsystem/auro-library/scripts/runtime/FocusTrap/FocusTrap.mjs";
-import { StringBoolean } from "@aurodesignsystem/auro-library/scripts/runtime/lit-converters/string-boolean.js";
-
-import { PopoverPositioner } from "@aurodesignsystem/auro-library/scripts/runtime/popover/positioner.js";
-import AuroLibraryRuntimeUtils from "@aurodesignsystem/auro-library/scripts/utils/runtimeUtils.mjs";
 import { html, LitElement } from "lit";
 import { createRef, ref } from "lit/directives/ref.js";
+import { classMap } from "lit/directives/class-map.js";
+import { ifDefined } from "lit/directives/if-defined.js";
+
+import { StringBoolean } from "@aurodesignsystem/auro-library/scripts/runtime/lit-converters/string-boolean.js";
+
+import { FocusTrap } from "@aurodesignsystem/auro-library/scripts/runtime/FocusTrap/FocusTrap.mjs";
+import { PopoverPositioner } from "@aurodesignsystem/auro-library/scripts/runtime/popover/positioner.js";
+
+import AuroLibraryRuntimeUtils from "@aurodesignsystem/auro-library/scripts/utils/runtimeUtils.mjs";
 
 import styles from "./styles/style.scss";
-import { classMap } from "lit/directives/class-map.js";
 
 const _DEFAULTS = {
+  disabled: false,
   type: "manual",
   behavior: "dropdown",
   showOnHover: false,
@@ -107,6 +111,10 @@ export class AuroLayover extends LitElement {
 
   static get properties() {
     return {
+
+      /** Whether or not the layover is disabled (show/hide should be fully disabled) */
+      disabled: { type: Boolean, reflect: true },
+
       /** The title of the layover - REQUIRED FOR A11Y */
       title: { type: String, reflect: false },
 
@@ -221,7 +229,7 @@ export class AuroLayover extends LitElement {
    * @private
    */
   show({ internal = false } = {}) {
-    if (!this.popover) return;
+    if (!this.popover || this.disabled) return;
 
     // Match the width of the popover to the trigger element
     this._matchPopoverToTriggerWidth();
@@ -259,7 +267,7 @@ export class AuroLayover extends LitElement {
    * @private
    */
   hide({ internal = false } = {}) {
-    if (!this.popover) return;
+    if (!this.popover || this.disabled) return;
 
     // Stop positioning the popover
     this._detachPopoverPositioner();
@@ -874,7 +882,7 @@ export class AuroLayover extends LitElement {
             part="popover-trigger"
             class="popover-trigger"
             type="button"
-            popovertarget="popover"
+            popovertarget="${ifDefined(!this.disabled ? "popover" : undefined)}"
             tabindex="-1"
           >
             ${this._renderTriggerSlot()}
@@ -916,8 +924,9 @@ export class AuroLayover extends LitElement {
       <div 
         part="popover"
         ${ref(this._popoverRef)}
-        popover="${this.type}"
+        popover="${ifDefined(!this.disabled ? this.type : undefined)}"
         id="popover"
+        class="popover"
         role="dialog"
         aria-label="${this.title}"
         @beforetoggle=${this._handlePopoverToggle.bind(this)}
