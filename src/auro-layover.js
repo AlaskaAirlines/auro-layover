@@ -108,6 +108,9 @@ export class AuroLayover extends LitElement {
 
   static get properties() {
     return {
+      /** Allow scrolling of the body when the dialog is open */
+      allowBodyScroll: { type: Boolean, reflect: true },
+
       /** Whether or not the layover is disabled (show/hide should be fully disabled) */
       disabled: { type: Boolean, reflect: true },
 
@@ -230,6 +233,9 @@ export class AuroLayover extends LitElement {
     // Match the width of the popover to the trigger element
     this._matchPopoverToTriggerWidth();
 
+    // Disable body scroll if the behavior requires it
+    this._disableBodyScroll();
+
     // Position the popover if behavior requires it
     if (this._shouldPosition) {
       this._attachPopoverPositioner();
@@ -264,6 +270,9 @@ export class AuroLayover extends LitElement {
    */
   hide({ internal = false } = {}) {
     if (!this.popover || this.disabled) return;
+
+    // Reset the body scroll to its default state
+    this._resetBodyScroll();
 
     // Stop positioning the popover
     this._detachPopoverPositioner();
@@ -348,6 +357,11 @@ export class AuroLayover extends LitElement {
       useAutoPlacement,
       useFlip,
     };
+  }
+
+  /** Whether or not the body scroll should be disabled */
+  get _shouldDisableBodyScroll() {
+    return ["dialog"].includes(this.behavior) && !this.allowBodyScroll;
   }
 
   /**
@@ -495,6 +509,7 @@ export class AuroLayover extends LitElement {
     this._detachInput();
     this._detachHover();
     this._detachPopoverPositioner();
+    this._resetBodyScroll();
 
     // Focus trap is specific to certain behaviors
     if (this._focusTrap) {
@@ -669,6 +684,24 @@ export class AuroLayover extends LitElement {
       el.removeEventListener("mouseover", this._handleOnHover);
       el.removeEventListener("mouseout", this._handleOnHoverLeave);
     }
+  }
+
+  /**
+   * Disables the body scroll when the popover is shown
+   * @returns {void}
+   */
+  _disableBodyScroll() {
+    if (this._shouldDisableBodyScroll) {
+      document.documentElement.style.overflow = "hidden";
+    }
+  }
+
+  /**
+   * Resets the body scroll to its default state
+   * @returns {void}
+   */
+  _resetBodyScroll() {
+    document.documentElement.style.overflow = null;
   }
 
   /** EVENT HANDLERS AND DISPATCHERS **/
