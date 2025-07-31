@@ -57,3 +57,10 @@
     left: 0;
   }
 }
+
+.popover::backdrop {
+  background: var(--auro-layover-backdrop-background, transparent);
+  backdrop-filter: var(--auro-layover-backdrop-filter, none);
+  opacity: var(--auro-layover-backdrop-opacity, 1);
+  transition: var(--auro-layover-backdrop-transition, none);
+}
