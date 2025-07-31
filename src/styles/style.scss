@@ -13,7 +13,6 @@
 }
 
 .popover {
-  
   .popover-arrow {
     position: absolute;
 
@@ -21,14 +20,17 @@
       bottom: 0;
       transform: translateY(100%);
     }
+
     &.direction-up {
       top: 0;
       transform: translateY(-100%);
     }
+
     &.direction-left {
       left: 0;
       transform: translateX(-100%);
     }
+
     &.direction-right {
       right: 0;
       transform: translateX(100%);

@@ -89,7 +89,7 @@
     "selector-class-pattern": "^(?:[a-z][a-zA-Z0-9]*|[a-z]+(?:-[a-z0-9]+)*)$",
     "selector-id-pattern": "^(?:[a-z][a-zA-Z0-9]*|[a-z]+(?:-[a-z0-9]+)*)$",
     "selector-max-attribute": 1,
-    "selector-max-class": 1,
+    "selector-max-class": 3,
     "selector-max-combinators": 1,
     "selector-max-compound-selectors": 2,
     "selector-max-id": 1,

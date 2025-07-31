@@ -1,14 +1,11 @@
+import { FocusTrap } from "@aurodesignsystem/auro-library/scripts/runtime/FocusTrap/FocusTrap.mjs";
+import { StringBoolean } from "@aurodesignsystem/auro-library/scripts/runtime/lit-converters/string-boolean.js";
+import { PopoverPositioner } from "@aurodesignsystem/auro-library/scripts/runtime/popover/positioner.js";
+import AuroLibraryRuntimeUtils from "@aurodesignsystem/auro-library/scripts/utils/runtimeUtils.mjs";
 import { html, LitElement } from "lit";
-import { createRef, ref } from "lit/directives/ref.js";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-import { StringBoolean } from "@aurodesignsystem/auro-library/scripts/runtime/lit-converters/string-boolean.js";
-
-import { FocusTrap } from "@aurodesignsystem/auro-library/scripts/runtime/FocusTrap/FocusTrap.mjs";
-import { PopoverPositioner } from "@aurodesignsystem/auro-library/scripts/runtime/popover/positioner.js";
-
-import AuroLibraryRuntimeUtils from "@aurodesignsystem/auro-library/scripts/utils/runtimeUtils.mjs";
+import { createRef, ref } from "lit/directives/ref.js";
 
 import styles from "./styles/style.scss";
 
@@ -111,7 +108,6 @@ export class AuroLayover extends LitElement {
 
   static get properties() {
     return {
-
       /** Whether or not the layover is disabled (show/hide should be fully disabled) */
       disabled: { type: Boolean, reflect: true },
 
@@ -340,11 +336,17 @@ export class AuroLayover extends LitElement {
    * @returns {object}
    */
   get _dropdownOptions() {
-    const { placement, offset, inline, useHide, useAutoPlacement, useFlip } = this;
+    const { placement, offset, inline, useHide, useAutoPlacement, useFlip } =
+      this;
     return {
       ..._POSITIONER_DEFAULTS,
       arrowEl: this.arrow,
-      placement, offset, inline, useHide, useAutoPlacement, useFlip
+      placement,
+      offset,
+      inline,
+      useHide,
+      useAutoPlacement,
+      useFlip,
     };
   }
 
@@ -892,16 +894,16 @@ export class AuroLayover extends LitElement {
 
   get _arrowDirection() {
     const directionsByPlacement = {
-      "top": "down",
+      top: "down",
       "top-start": "down",
       "top-end": "down",
-      "bottom": "up",
+      bottom: "up",
       "bottom-start": "up",
       "bottom-end": "up",
-      "left": "right",
+      left: "right",
       "left-start": "right",
       "left-end": "right",
-      "right": "left",
+      right: "left",
       "right-start": "left",
       "right-end": "left",
     };
@@ -914,7 +916,6 @@ export class AuroLayover extends LitElement {
    * @private @returns {TemplateResult}
    */
   _renderPopover() {
-
     const arrowClasses = {
       "popover-arrow": true,
       [`direction-${this._arrowDirection}`]: true,
