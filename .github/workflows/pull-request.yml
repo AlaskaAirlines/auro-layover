@@ -31,6 +31,7 @@ jobs:
         with:
           os: ubuntu-latest
           node-version: ${{ matrix.node-version }}
+          build-command: 'npx auro dev'
   test:
     if: github.event.action != 'closed'
     name: Test

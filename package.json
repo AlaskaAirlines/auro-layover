@@ -23,7 +23,7 @@
     "lit": "^3.3.1"
   },
   "devDependencies": {
-    "@aurodesignsystem/auro-cli": "^2.5.0",
+    "@aurodesignsystem/auro-cli": "^3.0.0",
     "@aurodesignsystem/auro-config": "^1.0.1",
     "@aurodesignsystem/auro-library": "npm:@aurodesignsystem-dev/auro-library@0.0.0-pr187.1",
     "@aurodesignsystem/design-tokens": "^8.3.0",
@@ -54,7 +54,7 @@
     "stylelint-config-standard-scss": "^15.0.1",
     "stylelint-order": "^7.0.0",
     "stylelint-scss": "^6.12.1",
-    "typescript": "^5.8.3",
+    "typescript": "^5.9.2",
     "wc-sass-render": "^1.4.0",
     "web-component-analyzer": "^2.0.0",
     "whatwg-fetch": "^3.6.20",
@@ -89,8 +89,8 @@
   ],
   "scripts": {
     "build": "auro build",
-    "dev": "auro dev --open",
-    "dev:closed": "auro dev",
+    "dev": "auro dev -w -s",
+    "dev:open": "auro dev -w -s --open",
     "lint": "biome check --no-errors-on-unmatched && stylelint \"./src/**/*.scss\"",
     "lint:fix": "biome check --fix --no-errors-on-unmatched && stylelint \"./src/**/*.scss\" --fix",
     "test": "auro test",
