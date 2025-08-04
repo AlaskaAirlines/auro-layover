@@ -301,6 +301,7 @@ export class AuroLayover extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
+    this._runtimeUtils = new AuroLibraryRuntimeUtils();
     this._runtimeUtils.handleComponentTagRename(this, "auro-layover");
   }
 
