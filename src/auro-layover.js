@@ -892,11 +892,13 @@ export class AuroLayover extends LitElement {
    */
   _renderTriggerSlot() {
     return html`
-      <slot 
-        name="trigger"
-        ${ref(this._triggerSlotRef)}
-        @slotchange="${() => this._handleTriggerSlotChange()}"
-      ></slot>
+      <span class="popover-trigger" ${ref(this._positioningTargetRef)}>
+        <slot 
+          name="trigger"
+          ${ref(this._triggerSlotRef)}
+          @slotchange="${() => this._handleTriggerSlotChange()}"
+        ></slot>
+      </span>
     `;
   }
 
