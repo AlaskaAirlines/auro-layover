@@ -110,7 +110,11 @@ export class AuroLayover extends LitElement {
   static get properties() {
     return {
       /** Allow scrolling of the body when the dialog is open */
-      allowBodyScroll: { type: Boolean, reflect: true },
+      allowBodyScroll: {
+        type: Boolean,
+        reflect: true,
+        converter: StringBoolean,
+      },
 
       /** Whether or not the layover is disabled (show/hide should be fully disabled) */
       disabled: { type: Boolean, reflect: true },
@@ -233,6 +237,8 @@ export class AuroLayover extends LitElement {
    */
   show({ internal = false } = {}) {
     if (!this.popover || this.disabled) return;
+
+    this._manageBehavior(this.behavior);
 
     // Match the width of the popover to the trigger element
     this._matchPopoverToTriggerWidth();
@@ -464,7 +470,7 @@ export class AuroLayover extends LitElement {
    * @returns {void}
    * @private
    */
-  _manageBehavior(newBehavior = this.behavior, force = false) {
+  _manageBehavior(newBehavior = this.behavior) {
     // Set the new behavior state
     this._currentBehaviorState = newBehavior;
 
@@ -516,6 +522,7 @@ export class AuroLayover extends LitElement {
     this._detachHover();
     this._detachPopoverPositioner();
     this._resetBodyScroll();
+    this._resetPositionStyles();
 
     // Focus trap is specific to certain behaviors
     this._detachFocusTrap();
