@@ -414,8 +414,9 @@ export class AuroLayover extends LitElement {
    * @private
    */
   get _shouldAttachFocusTrap() {
-    return !["input", "input-dropdown", ...TOOLTIP_TYPES].includes(
-      this.behavior,
+    return (
+      !this._focusTrap &&
+      !["input", "input-dropdown", ...TOOLTIP_TYPES].includes(this.behavior)
     );
   }
 
@@ -517,9 +518,7 @@ export class AuroLayover extends LitElement {
     this._resetBodyScroll();
 
     // Focus trap is specific to certain behaviors
-    if (this._focusTrap) {
-      this._detachFocusTrap();
-    }
+    this._detachFocusTrap();
   }
 
   /**
