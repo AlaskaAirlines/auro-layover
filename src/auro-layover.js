@@ -23,6 +23,7 @@ const _DEFAULTS = {
   placement: "bottom-start",
   inline: false,
   shown: false,
+  hideOnNoValue: true,
 };
 
 const _POSITIONER_DEFAULTS = {
@@ -137,6 +138,9 @@ export class AuroLayover extends LitElement {
 
       /** Whether the layover should show on change (input behavior only) */
       showOnChange: { type: String, reflect: false, converter: StringBoolean },
+
+      /** Whether or not the layover should close when there is no value (input behavior only) */
+      hideOnNoValue: { type: String, reflect: false, converter: StringBoolean },
 
       /** Whether the layover is shown or not */
       shown: { type: Boolean, reflect: true },
@@ -791,6 +795,11 @@ export class AuroLayover extends LitElement {
   _inputPassesValueCheck = (input) => {
     // Check the input value against the minimum length
     const { value } = input;
+
+    // If hideOnNoValue is not set, empty inputs are considered valid
+    if ((!value || !value.length) && !this.hideOnNoValue) return true;
+
+    // Do all other length checks
     return (
       (value && value.length >= this.minInputLength) ||
       !this.minInputLength ||
