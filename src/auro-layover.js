@@ -238,6 +238,7 @@ export class AuroLayover extends LitElement {
   show({ internal = false } = {}) {
     if (!this.popover || this.disabled) return;
 
+    // Ensure the behavior is set up correctly before showing
     this._manageBehavior(this.behavior);
 
     // Match the width of the popover to the trigger element
@@ -298,8 +299,17 @@ export class AuroLayover extends LitElement {
 
     // Focus the trigger element to ensure accessibility
     if (this._shouldAdjustFocus) {
+      // Save a reference to the current scroll position
+      const currentScrollY = window.scrollY;
+
+      // Get and focus the trigger element
       const focusEl = this._triggerElInSlot || this.button;
-      focusEl?.focus();
+      focusEl?.focus({ preventScroll: true });
+
+      // Not all browsers support preventScroll, so we need to make sure if the page scrolls we reset the scroll position
+      if (window.scrollY !== currentScrollY) {
+        window.scrollTo({ top: currentScrollY, behavior: "instant" });
+      }
     }
 
     // Dispatch relevant events
