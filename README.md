@@ -86,6 +86,14 @@ import "@aurodesignsystem/auro-layover";
 <auro-layover behavior="dialog">
   <button type="button" slot="trigger">Open Dialog</button>
   <p>I am a dialog popover. I should be positioned fixed over the top of the page.</p>
+  <auro-layover>
+    <button type="button" slot="trigger">Open Nested Layover</button>
+    <p>This is a layover in a layover, it shouldn't close at the same time as the parent one.</p>
+    <auro-layover>
+      <button type="button" slot="trigger">Open 3rd Level Nested Layover</button>
+      <p>This is a 3rd level nested layover, it shouldn't close at the same time as the parent ones.</p>
+    </auro-layover>
+  </auro-layover>
 </auro-layover>
 <p>&nbsp;</p>
 <p>dropdown example</p>
@@ -196,6 +204,14 @@ The `<auro-layover>` element should be used in situations where users:
 <auro-layover behavior="dialog">
   <button type="button" slot="trigger">Open Dialog</button>
   <p>I am a dialog popover. I should be positioned fixed over the top of the page.</p>
+  <auro-layover>
+    <button type="button" slot="trigger">Open Nested Layover</button>
+    <p>This is a layover in a layover, it shouldn't close at the same time as the parent one.</p>
+    <auro-layover>
+      <button type="button" slot="trigger">Open 3rd Level Nested Layover</button>
+      <p>This is a 3rd level nested layover, it shouldn't close at the same time as the parent ones.</p>
+    </auro-layover>
+  </auro-layover>
 </auro-layover>
 <p>&nbsp;</p>
 <p>dropdown example</p>

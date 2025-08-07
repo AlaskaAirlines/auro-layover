@@ -875,18 +875,68 @@ export class AuroLayover extends LitElement {
     this._hasTriggerContent = !!(nodes.length > 0);
   }
 
-  /** Runs when the popover is toggled by the browser
+  /**
+   * Runs before the popover is toggled by the browser
+   * Handles the first part of the layered closing functionality
+   * Unfortunately, most browsers do not correctly implement event.preventDefault() on the toggle event
+   * This means we have to split the re-show functionality between beforetoggle and toggle events
    * @param {Event} event - The event triggered by the popover toggle
    * @returns {void}
    * @private
    * */
-  _handlePopoverToggle(event) {
-    this._dispatchBeforeChangeEvent({ state: this._open ? "hidden" : "shown" });
+  _handlePopoverBeforeToggle(event) {
+    const isOpening = event.newState === "open";
 
-    // Wait a cycle for event listeners to make adjustments for beforechange event
-    event.newState === "open"
-      ? this.show({ internal: true })
-      : this.hide({ internal: true });
+    // Handle opening
+    if (isOpening) {
+      this._dispatchBeforeChangeEvent({ state: "shown" });
+      this.show({ internal: true });
+      return;
+    }
+
+    // Handle closing w/ functionality for handling layered closing
+    if (!isOpening) {
+      // If another layover is in the process of closing, prevent this one from closing
+      if (!!window.closingLayover && window.closingLayover !== this) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        // Re-show the popover (this helps reduce flicker)
+        this.popover.showPopover();
+        return;
+      }
+
+      // This is now the closing layover
+      window.closingLayover = this;
+
+      // Dispatch before change event
+      this._dispatchBeforeChangeEvent({ state: "hidden" });
+
+      // Hide the popover
+      this.hide({ internal: true });
+    }
+  }
+
+  /**
+   * Handles the popover toggle event, managing layered closing behavior
+   * @param {Event} event - the popover toggle event
+   * @returns {void}
+   */
+  _handlePopoverToggle(event) {
+    const isOpen = event.newState === "open";
+    const isClosingLayover = window.closingLayover === this;
+
+    // If we are closing
+    if (!isOpen) {
+      // If this is not the closing layover, make sure we don't hide
+      if (!isClosingLayover) this.popover.showPopover();
+
+      // Clear the closing layover reference after a tick if this is the closing layover
+      if (isClosingLayover)
+        setTimeout(() => {
+          window.closingLayover = null;
+        });
+    }
   }
 
   /**
@@ -991,7 +1041,8 @@ export class AuroLayover extends LitElement {
         class="popover"
         role="dialog"
         aria-label="${this.title}"
-        @beforetoggle=${this._handlePopoverToggle.bind(this)}
+        @toggle=${this._handlePopoverToggle.bind(this)}
+        @beforetoggle=${this._handlePopoverBeforeToggle.bind(this)}
         tabindex="-1"
       >
         <div 
