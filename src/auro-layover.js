@@ -262,7 +262,7 @@ export class AuroLayover extends LitElement {
     }
 
     // Attach the focus trap to the popover if necessary
-    this._attachFocusTrap(); // Attach focus trap to the popover
+    this._attachFocusTrap();
 
     // Show the popover if it this wasn't called internally by the beforetoggle event listener
     if (!internal) this.popover.showPopover();
@@ -290,6 +290,9 @@ export class AuroLayover extends LitElement {
 
     // Detach the focus trap if it exists
     this._detachFocusTrap();
+
+    // Detach the tab listener if it exists
+    this._detachTabListener();
 
     // Hide the popover if it is currently open
     if (!internal) this.popover.hidePopover();
@@ -560,13 +563,7 @@ export class AuroLayover extends LitElement {
   _attachFocusTrap() {
     if (this._shouldAttachFocusTrap) {
       this._focusTrap = new FocusTrap(this.popover, true);
-
-      // If the popover is shown, focus the first element
-      // Wait a cycle for the popover API and consumers to be done doing stuff before we adjust the focus
-      setTimeout(() => {
-        // Make sure there's still a focus trap and then focus the first element
-        if (this._focusTrap) this._focusTrap.focusFirstElement();
-      });
+      this._attachTabListener();
     }
   }
 
@@ -581,6 +578,39 @@ export class AuroLayover extends LitElement {
       this._focusTrap = null;
     }
   }
+
+  _attachTabListener() {
+    this._tabListener = true;
+    this.addEventListener("keydown", this._handleFirstTab);
+  }
+
+  _detachTabListener() {
+    this.removeEventListener("keydown", this._handleFirstTab);
+    this._tabListener = false;
+  }
+
+  _handleFirstTab = (e) => {
+    if (e.key === "Tab") {
+      // Guard Clause: Ensure focus trap exists
+      if (!this._focusTrap) return;
+
+      // Get the direction of the tab (forward or backward)
+      const { shiftKey } = e;
+      const direction = shiftKey ? "backward" : "forward";
+
+      // Wait for the browser to try to control the focus, then override it
+      // This is needed to ensure the focus trap works consistently across browsers
+      setTimeout(() => {
+        // Shift focus according to the tab direction
+        direction === "forward"
+          ? this._focusTrap.focusFirstElement()
+          : this._focusTrap.focusLastElement();
+      });
+
+      // Detach the tab listener after the first tab event
+      this._detachTabListener();
+    }
+  };
 
   /**
    * Begins positioning the popover using the PopoverPositioner class
