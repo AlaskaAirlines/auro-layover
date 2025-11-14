@@ -6,64 +6,31 @@
     "  2. Go to http://localhost:8000",
     "================================================================================"
   ],
-  "type": "module",
   "name": "@aurodesignsystem/auro-layover",
   "version": "0.0.0",
   "description": "auro-layover HTML custom element",
+  "type": "module",
+  "main": "dist/registered.js",
+  "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/AlaskaAirlines/auro-layover"
   },
   "license": "Apache-2.0",
   "engines": {
-    "node": ">=18.15.0"
+    "node": ">=20"
   },
   "dependencies": {
     "@lit/reactive-element": "^2.1.1",
     "lit": "^3.3.1"
   },
   "devDependencies": {
-    "@aurodesignsystem/auro-cli": "^3.0.0",
-    "@aurodesignsystem/auro-config": "^1.0.1",
+    "@aurodesignsystem/auro-cli": "^3.3.0",
+    "@aurodesignsystem/auro-config": "^1.3.1",
     "@aurodesignsystem/auro-library": "npm:@aurodesignsystem-dev/auro-library@0.0.0-pr187.1",
-    "@aurodesignsystem/design-tokens": "^8.3.0",
-    "@aurodesignsystem/webcorestylesheets": "^10.0.2",
-    "@biomejs/biome": "^2.1.3",
-    "@commitlint/cli": "^19.8.1",
-    "@commitlint/config-conventional": "^19.8.1",
-    "@open-wc/testing": "^4.0.0",
-    "@rollup/plugin-node-resolve": "^16.0.1",
-    "@semantic-release/changelog": "^6.0.3",
-    "@semantic-release/git": "^10.0.1",
-    "@semantic-release/npm": "^12.0.2",
-    "@web/dev-server": "^0.4.6",
-    "@web/test-runner": "^0.20.2",
-    "autoprefixer": "^10.4.21",
-    "compression": "^1.8.1",
-    "concat": "^1.0.3",
-    "concurrently": "^9.2.0",
-    "copyfiles": "^2.4.1",
-    "core-js": "^3.44.0",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.1.2",
-    "sass": "^1.89.2",
-    "semantic-release": "^24.2.7",
-    "stylelint": "^16.23.0",
-    "stylelint-config-idiomatic-order": "^10.0.0",
-    "stylelint-config-standard": "^39.0.0",
-    "stylelint-config-standard-scss": "^15.0.1",
-    "stylelint-order": "^7.0.0",
-    "stylelint-scss": "^6.12.1",
-    "typescript": "^5.9.2",
-    "wc-sass-render": "^1.4.0",
-    "web-component-analyzer": "^2.0.0",
-    "whatwg-fetch": "^3.6.20",
-    "yaml-lint": "^1.7.0"
-  },
-  "overrides": {
-    "wc-sass-render": {
-      "sass": "$sass"
-    }
+    "@aurodesignsystem/design-tokens": "^8.7.0",
+    "@aurodesignsystem/webcorestylesheets": "^10.1.4",
+    "husky": "^9.1.7"
   },
   "browserslist": [
     "last 2 Chrome versions",
@@ -72,14 +39,9 @@
     "last 2 Edge versions",
     "last 2 Safari major versions"
   ],
-  "nodemonConfig": {
-    "ignore": [
-      "*-css.js",
-      "*.css"
-    ]
-  },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "provenance": true
   },
   "keywords": [
     "alaska airlines",
@@ -89,32 +51,19 @@
   ],
   "scripts": {
     "build": "auro build",
+    "build:version": "node ./scripts/version.mjs",
     "dev": "auro dev -w -s",
     "dev:open": "auro dev -w -s --open",
     "lint": "biome check --no-errors-on-unmatched && stylelint \"./src/**/*.scss\"",
     "lint:fix": "biome check --fix --no-errors-on-unmatched && stylelint \"./src/**/*.scss\" --fix",
     "test": "auro test",
     "test:watch": "auro test --watch",
+    "test:coverage": "auro test --coverage-report --open",
     "prepare": "husky"
-  },
-  "files": [
-    "dist/**/*",
-    "demo/**/*",
-    "CHANGELOG.md",
-    "README.md",
-    "LICENSE",
-    "NOTICE"
-  ],
-  "lint-staged": {
-    "*": [
-      "biome check --fix --no-errors-on-unmatched"
-    ],
-    "*.{scss,css}": [
-      "stylelint --fix"
-    ]
   },
   "exports": {
     "./package.json": "./package.json",
+    "./custom-elements.json": "./custom-elements.json",
     "./readme.md": "./README.md",
     ".": "./dist/registered.js",
     "./demo/*.md": "./demo/*.md",
@@ -124,5 +73,15 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     }
-  }
+  },
+  "files": [
+    "custom-elements.json",
+    "dist/**/*",
+    "demo/**/*",
+    "CHANGELOG.md",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "customElements": "custom-elements.json"
 }

@@ -45,6 +45,7 @@ const _TEXT_NODE_IN_TRIGGER_SLOT_ERROR =
   "\nAuroLayover: The trigger slot should not contain text nodes.\n\nExample:\n<auro-layover>\n\t<auro-button slot='trigger'>Click me</auro-button>\n</auro-layover>\n";
 
 /**
+ * @customElement auro-layover
  * AuroLayover is a web component that provides a customizable popover element.
  * It supports various behaviors such as dialog, dropdown, tooltip, and input.
  * @fires auro-layover-shown - Fired when the layover is shown. Event detail contains {target: AuroLayover, newState: "shown"}.
