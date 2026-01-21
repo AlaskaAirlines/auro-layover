@@ -124,5 +124,6 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     }
-  }
+  },
+  "customElements": "custom-elements.json"
 }

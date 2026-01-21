@@ -1,0 +1,2993 @@
+{
+  "schemaVersion": "1.0.0",
+  "readme": "",
+  "modules": [
+    {
+      "kind": "javascript-module",
+      "path": "scripts/wca/auro-layover.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "AuroLayover is a reusable web component written using Lit.",
+          "name": "AuroLayoverWCA",
+          "superclass": {
+            "name": "AuroLayover",
+            "module": "/src/auro-layover.js"
+          },
+          "tagName": "auro-layover",
+          "customElement": true,
+          "attributes": [
+            {
+              "name": "_currentBehaviorState",
+              "type": {
+                "text": "string"
+              },
+              "description": "Internal state tracking the current behavior implementation",
+              "fieldName": "_currentBehaviorState",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "name": "_hasTriggerContent",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether the trigger slot contains any elements",
+              "fieldName": "_hasTriggerContent",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "name": "_open",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether the layover is open or not",
+              "fieldName": "_open",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "name": "allowBodyScroll",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Allow scrolling of the body when the dialog is open",
+              "fieldName": "allowBodyScroll",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "name": "behavior",
+              "type": {
+                "text": "string"
+              },
+              "description": "The behavior of the popover, \"dialog\", \"dialog-fullscreen\", \"dropdown\", \"tooltip\", or \"input\", \"input-fullscreen\", \"input-dropdown\"",
+              "fieldName": "behavior",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether or not the layover is disabled (show/hide should be fully disabled)",
+              "fieldName": "disabled",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "name": "hideOnNoValue",
+              "type": {
+                "text": "string"
+              },
+              "description": "Whether or not the layover should close when there is no value (input behavior only)",
+              "fieldName": "hideOnNoValue",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "name": "inline",
+              "type": {
+                "text": "string"
+              },
+              "description": "Whether or not the layover should try to align to an inline element like a hyperlink",
+              "fieldName": "inline",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "name": "input",
+              "type": {
+                "text": "object"
+              },
+              "description": "A reference to the input to attach to for input behavior",
+              "fieldName": "input",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "name": "matchWidth",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether or not the popover should match the width of the trigger",
+              "fieldName": "matchWidth",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "name": "minInputLength",
+              "type": {
+                "text": "number"
+              },
+              "description": "The minimum number of characters the user must type before the popover is shown",
+              "fieldName": "minInputLength",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "name": "offset",
+              "type": {
+                "text": "number"
+              },
+              "description": "The offset distance of the layover",
+              "fieldName": "offset",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "name": "placement",
+              "type": {
+                "text": "string"
+              },
+              "description": "The position of the layover, e.g., \"bottom-start\", \"top-end\" etc. (do not use with useAutoPlacement)",
+              "fieldName": "placement",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "name": "shown",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether the layover is shown or not",
+              "fieldName": "shown",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "name": "showOnChange",
+              "type": {
+                "text": "string"
+              },
+              "description": "Whether the layover should show on change (input behavior only)",
+              "fieldName": "showOnChange",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "name": "showOnFocus",
+              "type": {
+                "text": "string"
+              },
+              "description": "Whether the layover should open on focus (input behavior only)",
+              "fieldName": "showOnFocus",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "name": "showOnHover",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether the layover should show on hover",
+              "fieldName": "showOnHover",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "name": "title",
+              "type": {
+                "text": "string"
+              },
+              "description": "The title of the layover - REQUIRED FOR A11Y",
+              "fieldName": "title",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "name": "type",
+              "type": {
+                "text": "string"
+              },
+              "description": "The type of layover, e.g., \"manual\", \"auto\", or \"hint\"",
+              "fieldName": "type",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "name": "useAutoPlacement",
+              "type": {
+                "text": "string"
+              },
+              "description": "Whether or not to use automatic placement for the layover (do not use with placement)",
+              "fieldName": "useAutoPlacement",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "name": "useFlip",
+              "type": {
+                "text": "string"
+              },
+              "description": "Whether or not to use the flip behavior (flips the element when it goes off-screen)",
+              "fieldName": "useFlip",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "name": "useHide",
+              "type": {
+                "text": "string"
+              },
+              "description": "Whether or not to use the hide behavior (hides element when trigger is not visible)",
+              "fieldName": "useHide",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            }
+          ],
+          "members": [
+            {
+              "kind": "field",
+              "name": "_arrowDirection",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_attachClickTracker",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              },
+              "type": {
+                "text": "_attachClickTracker() => void"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_attachFocusTrap",
+              "description": "Attaches a focus trap to the popover if necessary",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_attachPopoverPositioner",
+              "description": "Begins positioning the popover using the PopoverPositioner class",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_attachTabListener",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              },
+              "type": {
+                "text": "_attachTabListener() => void"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_bindHover",
+              "description": "Binds hover events to the positioning target element\nThis is used for behaviors like tooltip where the popover should show on hover",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_bindToInput",
+              "description": "Binds the input element in the trigger slot to the popover's input behavior",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_calcType",
+              "parameters": [
+                {
+                  "name": "behavior",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Calculates the type of the popover based on its behavior",
+              "return": {
+                "type": {
+                  "text": "string"
+                }
+              },
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              },
+              "type": {
+                "text": "_calcType(behavior: string) => string"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_checkForInput",
+              "description": "Checks for an input element in the trigger slot\nIf no input is set, it tries to find the trigger element in the slot.\nIf it finds a valid input element, it sets it as the input element.",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_cleanupCurrentBehavior",
+              "description": "Cleans up the current behavior implementation",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_createElementRefs",
+              "description": "Creates refs for elements in the template",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_currentBehaviorState",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "description": "Internal state tracking the current behavior implementation",
+              "attribute": "_currentBehaviorState",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_detachClickTracker",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              },
+              "type": {
+                "text": "_detachClickTracker() => void"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_detachFocusTrap",
+              "description": "Detaches the existing focus trap if it exists",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_detachHover",
+              "description": "Detaches hover events from the positioning target element",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_detachInput",
+              "description": "Detaches the input element from the popover's input behavior",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_detachPopoverPositioner",
+              "description": "Cancels the positioning of the popover if it is currently active",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_detachTabListener",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              },
+              "type": {
+                "text": "_detachTabListener() => void"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_disableBodyScroll",
+              "description": "Disables the body scroll when the popover is shown",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              },
+              "type": {
+                "text": "_disableBodyScroll() => void"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_dispatchBeforeChangeEvent",
+              "parameters": [
+                {
+                  "name": "{ state }"
+                },
+                {
+                  "description": "An object containing the shown state.",
+                  "name": "param",
+                  "type": {
+                    "text": "Object"
+                  }
+                }
+              ],
+              "description": "Dispatches an event indicating the popover's visibility state is about to change.\nNotifies listeners when the popover transitions between shown and hidden states.",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_dispatchChangeEvent",
+              "parameters": [
+                {
+                  "name": "{ state }"
+                },
+                {
+                  "description": "An object containing the shown state.",
+                  "name": "param",
+                  "type": {
+                    "text": "Object"
+                  }
+                }
+              ],
+              "description": "Dispatches an event indicating the popover's visibility state has changed.\nNotifies listeners when the popover transitions between shown and hidden states.",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_dispatchHideEvent",
+              "description": "Dispatches an event indicating the popover has been hidden.\nNotifies listeners that the popover is now hidden and emits a change event.",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_dispatchShowEvent",
+              "description": "Dispatches an event indicating the popover has been shown.\nNotifies listeners that the popover is now visible and emits a change event.",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_dropdownOptions",
+              "description": "Generates the dropdown options based on internal properties and defined defaults",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "object"
+                }
+              },
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_handleFirstTab",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_handleInputBlur",
+              "description": "Handles input blur events, hiding the popover",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_handleInputChange",
+              "description": "Handles input changes, showing or hiding the popover based on the input value",
+              "parameters": [
+                {
+                  "name": "event",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ],
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_handleInputFocus",
+              "description": "Handles input focus events, showing the popover if all conditions are met",
+              "parameters": [
+                {
+                  "name": "event",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ],
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_handleOnHover",
+              "description": "Handles hover events on the trigger element, showing the popover if showOnHover is true",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_handleOnHoverLeave",
+              "description": "Handles hover leave events on the trigger element, hiding the popover if showOnHover is true",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_handlePopoverBeforeToggle",
+              "parameters": [
+                {
+                  "name": "event",
+                  "description": "The event triggered by the popover toggle",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ],
+              "description": "Runs before the popover is toggled by the browser\nHandles the first part of the layered closing functionality",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_handlePopoverToggle",
+              "parameters": [
+                {
+                  "name": "event",
+                  "description": "the popover toggle event",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ],
+              "description": "Handles the popover toggle event, managing layered closing behavior",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              },
+              "type": {
+                "text": "_handlePopoverToggle(event: Event) => void"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_handleTriggerSlotChange",
+              "description": "Handles changes to the trigger slot, adjusting the type if necessary",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_hasTriggerContent",
+              "privacy": "public",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether the trigger slot contains any elements",
+              "attribute": "_hasTriggerContent",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_hideInLayers",
+              "parameters": [
+                {
+                  "name": "{ event = null }",
+                  "default": "{}"
+                },
+                {
+                  "description": "Options for hiding",
+                  "name": "options",
+                  "type": {
+                    "text": "@param {boolean} options.internal - Whether this is an internal call\n   * @param {Event} options.event - The event that triggered the hide (optional)\n   * "
+                  }
+                }
+              ],
+              "description": "Handles the layered closing of layovers to prevent interference between multiple open layovers",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_inputPassesValueCheck",
+              "description": "Checks if the input passes the value check based on the minimum input length",
+              "parameters": [
+                {
+                  "name": "input",
+                  "type": {
+                    "text": "HTMLElement"
+                  }
+                }
+              ],
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_layerManager",
+              "default": "new LayerManager()",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_manageBehavior",
+              "parameters": [
+                {
+                  "name": "newBehavior",
+                  "default": "this.behavior",
+                  "description": "The behavior to transition to",
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "description": "Whether to force reconfiguration even if behavior hasn't changed",
+                  "name": "force",
+                  "type": {
+                    "text": "boolean"
+                  }
+                }
+              ],
+              "description": "Centralized method to manage behavior transitions and state\nCalled whenever behavior changes or when component needs reconfiguration\nNote that some of these calls are reinforced in the show and hide methods",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_matchPopoverToTriggerWidth",
+              "description": "Matches the width of the popover to the trigger element's width or resets width style",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              },
+              "type": {
+                "text": "_matchPopoverToTriggerWidth() => void"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_open",
+              "privacy": "public",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether the layover is open or not",
+              "attribute": "_open",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_positioningTarget",
+              "description": "Gets the positioning target element, which is the element that the popover will be positioned relative to",
+              "return": {
+                "type": {
+                  "text": "HTMLElement"
+                }
+              },
+              "privacy": "private",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_renderPopover",
+              "description": "Renders the popover element",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "TemplateResult"
+                }
+              },
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_renderTrigger",
+              "description": "Renders the trigger element for the popover (based on behavior type)",
+              "return": {
+                "type": {
+                  "text": "TemplateResult"
+                }
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_renderTriggerSlot",
+              "description": "Renders the trigger slot for the trigger element",
+              "return": {
+                "type": {
+                  "text": "TemplateResult"
+                }
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_resetBodyScroll",
+              "description": "Resets the body scroll to its default state",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              },
+              "type": {
+                "text": "_resetBodyScroll() => void"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_resetPositionStyles",
+              "description": "Resets the position styles for the popover\nThis is in case the popover was originally assigned a behavior that required positioning",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_runtimeUtils",
+              "default": "new AuroLibraryRuntimeUtils()",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_setDefaults",
+              "parameters": [
+                {
+                  "name": "defaults",
+                  "description": "The default values to set",
+                  "type": {
+                    "text": "object"
+                  }
+                }
+              ],
+              "description": "Sets the default values of the component during startup",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_shouldAdjustFocus",
+              "description": "Checks if the popover should adjust focus based on its behavior",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              },
+              "privacy": "private",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_shouldAttachFocusTrap",
+              "description": "Checks if a focus trap should be attached based on the behavior",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              },
+              "privacy": "private",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_shouldCloseInLayers",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_shouldDisableBodyScroll",
+              "description": "Whether or not the body scroll should be disabled",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_shouldPosition",
+              "description": "PRIVATE GETTERS *",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_triggerElInSlot",
+              "description": "Gets the trigger element in the slot",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_triggerSlot",
+              "description": "Gets the trigger slot element",
+              "return": {
+                "type": {
+                  "text": "HTMLSlotElement"
+                }
+              },
+              "privacy": "private",
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "allowBodyScroll",
+              "privacy": "public",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Allow scrolling of the body when the dialog is open",
+              "attribute": "allowBodyScroll",
+              "reflects": true,
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "arrow",
+              "description": "A reference to the popover component's internal arrow element",
+              "return": {
+                "type": {
+                  "text": "HTMLElement"
+                }
+              },
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "behavior",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "description": "The behavior of the popover, \"dialog\", \"dialog-fullscreen\", \"dropdown\", \"tooltip\", or \"input\", \"input-fullscreen\", \"input-dropdown\"",
+              "attribute": "behavior",
+              "reflects": true,
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "button",
+              "description": "A reference to the popover component's internal button element (trigger)",
+              "return": {
+                "type": {
+                  "text": "HTMLButtonElement"
+                }
+              },
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "disabled",
+              "privacy": "public",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether or not the layover is disabled (show/hide should be fully disabled)",
+              "attribute": "disabled",
+              "reflects": true,
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "hide",
+              "description": "Shows the popover",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "hideOnNoValue",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "description": "Whether or not the layover should close when there is no value (input behavior only)",
+              "attribute": "hideOnNoValue",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "inline",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "description": "Whether or not the layover should try to align to an inline element like a hyperlink",
+              "attribute": "inline",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "input",
+              "privacy": "public",
+              "type": {
+                "text": "object"
+              },
+              "description": "A reference to the input to attach to for input behavior",
+              "attribute": "input",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "matchWidth",
+              "privacy": "public",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether or not the popover should match the width of the trigger",
+              "attribute": "matchWidth",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "minInputLength",
+              "privacy": "public",
+              "type": {
+                "text": "number"
+              },
+              "description": "The minimum number of characters the user must type before the popover is shown",
+              "attribute": "minInputLength",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "offset",
+              "privacy": "public",
+              "type": {
+                "text": "number"
+              },
+              "description": "The offset distance of the layover",
+              "attribute": "offset",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "placement",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "description": "The position of the layover, e.g., \"bottom-start\", \"top-end\" etc. (do not use with useAutoPlacement)",
+              "attribute": "placement",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "popover",
+              "description": "A reference to the popover component's internal popover element",
+              "return": {
+                "type": {
+                  "text": "HTMLElement"
+                }
+              },
+              "readonly": true,
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "register",
+              "static": true,
+              "parameters": [
+                {
+                  "name": "name",
+                  "default": "\"auro-layover\""
+                }
+              ],
+              "description": "STATIC METHODS *",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              },
+              "type": {
+                "text": "register(name = \"auro-layover\") => void"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "show",
+              "parameters": [
+                {
+                  "name": "{ internal = false }",
+                  "default": "{}"
+                }
+              ],
+              "description": "Shows the popover",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "shown",
+              "privacy": "public",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether the layover is shown or not",
+              "attribute": "shown",
+              "reflects": true,
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "showOnChange",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "description": "Whether the layover should show on change (input behavior only)",
+              "attribute": "showOnChange",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "showOnFocus",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "description": "Whether the layover should open on focus (input behavior only)",
+              "attribute": "showOnFocus",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "showOnHover",
+              "privacy": "public",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether the layover should show on hover",
+              "attribute": "showOnHover",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "title",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "description": "The title of the layover - REQUIRED FOR A11Y",
+              "attribute": "title",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "method",
+              "name": "toggle",
+              "description": "Toggles the visibility of the layover.",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              },
+              "type": {
+                "text": "toggle() => void"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "type",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "description": "The type of layover, e.g., \"manual\", \"auto\", or \"hint\"",
+              "attribute": "type",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "useAutoPlacement",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "description": "Whether or not to use automatic placement for the layover (do not use with placement)",
+              "attribute": "useAutoPlacement",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "useFlip",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "description": "Whether or not to use the flip behavior (flips the element when it goes off-screen)",
+              "attribute": "useFlip",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "kind": "field",
+              "name": "useHide",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "description": "Whether or not to use the hide behavior (hides element when trigger is not visible)",
+              "attribute": "useHide",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            }
+          ],
+          "events": [
+            {
+              "name": "auro-layover-beforechange",
+              "type": {
+                "text": "CustomEvent"
+              },
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "name": "auro-layover-change",
+              "type": {
+                "text": "CustomEvent"
+              },
+              "description": "Fired when the layover's visibility state changes. Event detail contains {target: AuroLayover, newState: string} where newState is either \"shown\" or \"hidden\".",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "name": "auro-layover-hidden",
+              "type": {
+                "text": "CustomEvent"
+              },
+              "description": "Fired when the layover is hidden. Event detail contains {target: AuroLayover, newState: \"hidden\"}.",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            },
+            {
+              "name": "auro-layover-shown",
+              "type": {
+                "text": "CustomEvent"
+              },
+              "description": "Fired when the layover is shown. Event detail contains {target: AuroLayover, newState: \"shown\"}.",
+              "inheritedFrom": {
+                "name": "AuroLayover",
+                "module": "src/auro-layover.js"
+              }
+            }
+          ],
+          "modulePath": "scripts/wca/auro-layover.js",
+          "definitionPath": "scripts/wca/auro-layover.js"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "auro-layover",
+          "declaration": {
+            "name": "AuroLayoverWCA",
+            "module": "scripts/wca/auro-layover.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/auro-layover.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "AuroLayover is a web component that provides a customizable popover element.\nIt supports various behaviors such as dialog, dropdown, tooltip, and input.",
+          "name": "AuroLayover",
+          "members": [
+            {
+              "kind": "field",
+              "name": "_arrowDirection",
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "_attachClickTracker"
+            },
+            {
+              "kind": "method",
+              "name": "_attachFocusTrap",
+              "description": "Attaches a focus trap to the popover if necessary",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "_attachPopoverPositioner",
+              "description": "Begins positioning the popover using the PopoverPositioner class",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "_attachTabListener"
+            },
+            {
+              "kind": "method",
+              "name": "_bindHover",
+              "description": "Binds hover events to the positioning target element\nThis is used for behaviors like tooltip where the popover should show on hover",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "_bindToInput",
+              "description": "Binds the input element in the trigger slot to the popover's input behavior",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "_calcType",
+              "parameters": [
+                {
+                  "name": "behavior",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Calculates the type of the popover based on its behavior",
+              "return": {
+                "type": {
+                  "text": "string"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_checkForInput",
+              "description": "Checks for an input element in the trigger slot\nIf no input is set, it tries to find the trigger element in the slot.\nIf it finds a valid input element, it sets it as the input element.",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "_cleanupCurrentBehavior",
+              "description": "Cleans up the current behavior implementation",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "_createElementRefs",
+              "description": "Creates refs for elements in the template",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "_currentBehaviorState",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "description": "Internal state tracking the current behavior implementation",
+              "attribute": "_currentBehaviorState"
+            },
+            {
+              "kind": "method",
+              "name": "_detachClickTracker"
+            },
+            {
+              "kind": "method",
+              "name": "_detachFocusTrap",
+              "description": "Detaches the existing focus trap if it exists",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "_detachHover",
+              "description": "Detaches hover events from the positioning target element",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "_detachInput",
+              "description": "Detaches the input element from the popover's input behavior",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "_detachPopoverPositioner",
+              "description": "Cancels the positioning of the popover if it is currently active",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "_detachTabListener"
+            },
+            {
+              "kind": "method",
+              "name": "_disableBodyScroll",
+              "description": "Disables the body scroll when the popover is shown",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_dispatchBeforeChangeEvent",
+              "parameters": [
+                {
+                  "name": "{ state }"
+                },
+                {
+                  "description": "An object containing the shown state.",
+                  "name": "param",
+                  "type": {
+                    "text": "Object"
+                  }
+                }
+              ],
+              "description": "Dispatches an event indicating the popover's visibility state is about to change.\nNotifies listeners when the popover transitions between shown and hidden states.",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "_dispatchChangeEvent",
+              "parameters": [
+                {
+                  "name": "{ state }"
+                },
+                {
+                  "description": "An object containing the shown state.",
+                  "name": "param",
+                  "type": {
+                    "text": "Object"
+                  }
+                }
+              ],
+              "description": "Dispatches an event indicating the popover's visibility state has changed.\nNotifies listeners when the popover transitions between shown and hidden states.",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "_dispatchHideEvent",
+              "description": "Dispatches an event indicating the popover has been hidden.\nNotifies listeners that the popover is now hidden and emits a change event.",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "_dispatchShowEvent",
+              "description": "Dispatches an event indicating the popover has been shown.\nNotifies listeners that the popover is now visible and emits a change event.",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "_dropdownOptions",
+              "description": "Generates the dropdown options based on internal properties and defined defaults",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "object"
+                }
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "_handleFirstTab"
+            },
+            {
+              "kind": "field",
+              "name": "_handleInputBlur",
+              "description": "Handles input blur events, hiding the popover",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "_handleInputChange",
+              "description": "Handles input changes, showing or hiding the popover based on the input value",
+              "parameters": [
+                {
+                  "name": "event",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ],
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "_handleInputFocus",
+              "description": "Handles input focus events, showing the popover if all conditions are met",
+              "parameters": [
+                {
+                  "name": "event",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ],
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "_handleOnHover",
+              "description": "Handles hover events on the trigger element, showing the popover if showOnHover is true",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "_handleOnHoverLeave",
+              "description": "Handles hover leave events on the trigger element, hiding the popover if showOnHover is true",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "_handlePopoverBeforeToggle",
+              "parameters": [
+                {
+                  "name": "event",
+                  "description": "The event triggered by the popover toggle",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ],
+              "description": "Runs before the popover is toggled by the browser\nHandles the first part of the layered closing functionality",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "_handlePopoverToggle",
+              "parameters": [
+                {
+                  "name": "event",
+                  "description": "the popover toggle event",
+                  "type": {
+                    "text": "Event"
+                  }
+                }
+              ],
+              "description": "Handles the popover toggle event, managing layered closing behavior",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_handleTriggerSlotChange",
+              "description": "Handles changes to the trigger slot, adjusting the type if necessary",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "_hasTriggerContent",
+              "privacy": "public",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether the trigger slot contains any elements",
+              "attribute": "_hasTriggerContent"
+            },
+            {
+              "kind": "method",
+              "name": "_hideInLayers",
+              "parameters": [
+                {
+                  "name": "{ event = null }",
+                  "default": "{}"
+                },
+                {
+                  "description": "Options for hiding",
+                  "name": "options",
+                  "type": {
+                    "text": "@param {boolean} options.internal - Whether this is an internal call\n   * @param {Event} options.event - The event that triggered the hide (optional)\n   * "
+                  }
+                }
+              ],
+              "description": "Handles the layered closing of layovers to prevent interference between multiple open layovers",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "_inputPassesValueCheck",
+              "description": "Checks if the input passes the value check based on the minimum input length",
+              "parameters": [
+                {
+                  "name": "input",
+                  "type": {
+                    "text": "HTMLElement"
+                  }
+                }
+              ],
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "_layerManager",
+              "default": "new LayerManager()"
+            },
+            {
+              "kind": "method",
+              "name": "_manageBehavior",
+              "parameters": [
+                {
+                  "name": "newBehavior",
+                  "default": "this.behavior",
+                  "description": "The behavior to transition to",
+                  "type": {
+                    "text": "string"
+                  }
+                },
+                {
+                  "description": "Whether to force reconfiguration even if behavior hasn't changed",
+                  "name": "force",
+                  "type": {
+                    "text": "boolean"
+                  }
+                }
+              ],
+              "description": "Centralized method to manage behavior transitions and state\nCalled whenever behavior changes or when component needs reconfiguration\nNote that some of these calls are reinforced in the show and hide methods",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "_matchPopoverToTriggerWidth",
+              "description": "Matches the width of the popover to the trigger element's width or resets width style",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "field",
+              "name": "_open",
+              "privacy": "public",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether the layover is open or not",
+              "attribute": "_open"
+            },
+            {
+              "kind": "field",
+              "name": "_positioningTarget",
+              "description": "Gets the positioning target element, which is the element that the popover will be positioned relative to",
+              "return": {
+                "type": {
+                  "text": "HTMLElement"
+                }
+              },
+              "privacy": "private",
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "_renderPopover",
+              "description": "Renders the popover element",
+              "privacy": "private",
+              "return": {
+                "type": {
+                  "text": "TemplateResult"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_renderTrigger",
+              "description": "Renders the trigger element for the popover (based on behavior type)",
+              "return": {
+                "type": {
+                  "text": "TemplateResult"
+                }
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "_renderTriggerSlot",
+              "description": "Renders the trigger slot for the trigger element",
+              "return": {
+                "type": {
+                  "text": "TemplateResult"
+                }
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "_resetBodyScroll",
+              "description": "Resets the body scroll to its default state",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_resetPositionStyles",
+              "description": "Resets the position styles for the popover\nThis is in case the popover was originally assigned a behavior that required positioning",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "_runtimeUtils",
+              "default": "new AuroLibraryRuntimeUtils()"
+            },
+            {
+              "kind": "method",
+              "name": "_setDefaults",
+              "parameters": [
+                {
+                  "name": "defaults",
+                  "description": "The default values to set",
+                  "type": {
+                    "text": "object"
+                  }
+                }
+              ],
+              "description": "Sets the default values of the component during startup",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "_shouldAdjustFocus",
+              "description": "Checks if the popover should adjust focus based on its behavior",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              },
+              "privacy": "private",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "_shouldAttachFocusTrap",
+              "description": "Checks if a focus trap should be attached based on the behavior",
+              "return": {
+                "type": {
+                  "text": "boolean"
+                }
+              },
+              "privacy": "private",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "_shouldCloseInLayers",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "_shouldDisableBodyScroll",
+              "description": "Whether or not the body scroll should be disabled",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "_shouldPosition",
+              "description": "PRIVATE GETTERS *",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "_triggerElInSlot",
+              "description": "Gets the trigger element in the slot",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "_triggerSlot",
+              "description": "Gets the trigger slot element",
+              "return": {
+                "type": {
+                  "text": "HTMLSlotElement"
+                }
+              },
+              "privacy": "private",
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "allowBodyScroll",
+              "privacy": "public",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Allow scrolling of the body when the dialog is open",
+              "attribute": "allowBodyScroll",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "arrow",
+              "description": "A reference to the popover component's internal arrow element",
+              "return": {
+                "type": {
+                  "text": "HTMLElement"
+                }
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "behavior",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "description": "The behavior of the popover, \"dialog\", \"dialog-fullscreen\", \"dropdown\", \"tooltip\", or \"input\", \"input-fullscreen\", \"input-dropdown\"",
+              "attribute": "behavior",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "button",
+              "description": "A reference to the popover component's internal button element (trigger)",
+              "return": {
+                "type": {
+                  "text": "HTMLButtonElement"
+                }
+              },
+              "readonly": true
+            },
+            {
+              "kind": "field",
+              "name": "disabled",
+              "privacy": "public",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether or not the layover is disabled (show/hide should be fully disabled)",
+              "attribute": "disabled",
+              "reflects": true
+            },
+            {
+              "kind": "method",
+              "name": "hide",
+              "description": "Shows the popover",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "hideOnNoValue",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "description": "Whether or not the layover should close when there is no value (input behavior only)",
+              "attribute": "hideOnNoValue"
+            },
+            {
+              "kind": "field",
+              "name": "inline",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "description": "Whether or not the layover should try to align to an inline element like a hyperlink",
+              "attribute": "inline"
+            },
+            {
+              "kind": "field",
+              "name": "input",
+              "privacy": "public",
+              "type": {
+                "text": "object"
+              },
+              "description": "A reference to the input to attach to for input behavior",
+              "attribute": "input"
+            },
+            {
+              "kind": "field",
+              "name": "matchWidth",
+              "privacy": "public",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether or not the popover should match the width of the trigger",
+              "attribute": "matchWidth"
+            },
+            {
+              "kind": "field",
+              "name": "minInputLength",
+              "privacy": "public",
+              "type": {
+                "text": "number"
+              },
+              "description": "The minimum number of characters the user must type before the popover is shown",
+              "attribute": "minInputLength"
+            },
+            {
+              "kind": "field",
+              "name": "offset",
+              "privacy": "public",
+              "type": {
+                "text": "number"
+              },
+              "description": "The offset distance of the layover",
+              "attribute": "offset"
+            },
+            {
+              "kind": "field",
+              "name": "placement",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "description": "The position of the layover, e.g., \"bottom-start\", \"top-end\" etc. (do not use with useAutoPlacement)",
+              "attribute": "placement"
+            },
+            {
+              "kind": "field",
+              "name": "popover",
+              "description": "A reference to the popover component's internal popover element",
+              "return": {
+                "type": {
+                  "text": "HTMLElement"
+                }
+              },
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "register",
+              "static": true,
+              "parameters": [
+                {
+                  "name": "name",
+                  "default": "\"auro-layover\""
+                }
+              ],
+              "description": "STATIC METHODS *"
+            },
+            {
+              "kind": "method",
+              "name": "show",
+              "parameters": [
+                {
+                  "name": "{ internal = false }",
+                  "default": "{}"
+                }
+              ],
+              "description": "Shows the popover",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              },
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "shown",
+              "privacy": "public",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether the layover is shown or not",
+              "attribute": "shown",
+              "reflects": true
+            },
+            {
+              "kind": "field",
+              "name": "showOnChange",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "description": "Whether the layover should show on change (input behavior only)",
+              "attribute": "showOnChange"
+            },
+            {
+              "kind": "field",
+              "name": "showOnFocus",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "description": "Whether the layover should open on focus (input behavior only)",
+              "attribute": "showOnFocus"
+            },
+            {
+              "kind": "field",
+              "name": "showOnHover",
+              "privacy": "public",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether the layover should show on hover",
+              "attribute": "showOnHover"
+            },
+            {
+              "kind": "field",
+              "name": "title",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "description": "The title of the layover - REQUIRED FOR A11Y",
+              "attribute": "title"
+            },
+            {
+              "kind": "method",
+              "name": "toggle",
+              "description": "Toggles the visibility of the layover.",
+              "return": {
+                "type": {
+                  "text": "void"
+                }
+              }
+            },
+            {
+              "kind": "field",
+              "name": "type",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "description": "The type of layover, e.g., \"manual\", \"auto\", or \"hint\"",
+              "attribute": "type"
+            },
+            {
+              "kind": "field",
+              "name": "useAutoPlacement",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "description": "Whether or not to use automatic placement for the layover (do not use with placement)",
+              "attribute": "useAutoPlacement"
+            },
+            {
+              "kind": "field",
+              "name": "useFlip",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "description": "Whether or not to use the flip behavior (flips the element when it goes off-screen)",
+              "attribute": "useFlip"
+            },
+            {
+              "kind": "field",
+              "name": "useHide",
+              "privacy": "public",
+              "type": {
+                "text": "string"
+              },
+              "description": "Whether or not to use the hide behavior (hides element when trigger is not visible)",
+              "attribute": "useHide"
+            }
+          ],
+          "events": [
+            {
+              "name": "auro-layover-beforechange",
+              "type": {
+                "text": "CustomEvent"
+              }
+            },
+            {
+              "name": "auro-layover-change",
+              "type": {
+                "text": "CustomEvent"
+              },
+              "description": "Fired when the layover's visibility state changes. Event detail contains {target: AuroLayover, newState: string} where newState is either \"shown\" or \"hidden\"."
+            },
+            {
+              "name": "auro-layover-hidden",
+              "type": {
+                "text": "CustomEvent"
+              },
+              "description": "Fired when the layover is hidden. Event detail contains {target: AuroLayover, newState: \"hidden\"}."
+            },
+            {
+              "name": "auro-layover-shown",
+              "type": {
+                "text": "CustomEvent"
+              },
+              "description": "Fired when the layover is shown. Event detail contains {target: AuroLayover, newState: \"shown\"}."
+            }
+          ],
+          "attributes": [
+            {
+              "name": "_currentBehaviorState",
+              "type": {
+                "text": "string"
+              },
+              "description": "Internal state tracking the current behavior implementation",
+              "fieldName": "_currentBehaviorState"
+            },
+            {
+              "name": "_hasTriggerContent",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether the trigger slot contains any elements",
+              "fieldName": "_hasTriggerContent"
+            },
+            {
+              "name": "_open",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether the layover is open or not",
+              "fieldName": "_open"
+            },
+            {
+              "name": "allowBodyScroll",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Allow scrolling of the body when the dialog is open",
+              "fieldName": "allowBodyScroll"
+            },
+            {
+              "name": "behavior",
+              "type": {
+                "text": "string"
+              },
+              "description": "The behavior of the popover, \"dialog\", \"dialog-fullscreen\", \"dropdown\", \"tooltip\", or \"input\", \"input-fullscreen\", \"input-dropdown\"",
+              "fieldName": "behavior"
+            },
+            {
+              "name": "disabled",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether or not the layover is disabled (show/hide should be fully disabled)",
+              "fieldName": "disabled"
+            },
+            {
+              "name": "hideOnNoValue",
+              "type": {
+                "text": "string"
+              },
+              "description": "Whether or not the layover should close when there is no value (input behavior only)",
+              "fieldName": "hideOnNoValue"
+            },
+            {
+              "name": "inline",
+              "type": {
+                "text": "string"
+              },
+              "description": "Whether or not the layover should try to align to an inline element like a hyperlink",
+              "fieldName": "inline"
+            },
+            {
+              "name": "input",
+              "type": {
+                "text": "object"
+              },
+              "description": "A reference to the input to attach to for input behavior",
+              "fieldName": "input"
+            },
+            {
+              "name": "matchWidth",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether or not the popover should match the width of the trigger",
+              "fieldName": "matchWidth"
+            },
+            {
+              "name": "minInputLength",
+              "type": {
+                "text": "number"
+              },
+              "description": "The minimum number of characters the user must type before the popover is shown",
+              "fieldName": "minInputLength"
+            },
+            {
+              "name": "offset",
+              "type": {
+                "text": "number"
+              },
+              "description": "The offset distance of the layover",
+              "fieldName": "offset"
+            },
+            {
+              "name": "placement",
+              "type": {
+                "text": "string"
+              },
+              "description": "The position of the layover, e.g., \"bottom-start\", \"top-end\" etc. (do not use with useAutoPlacement)",
+              "fieldName": "placement"
+            },
+            {
+              "name": "shown",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether the layover is shown or not",
+              "fieldName": "shown"
+            },
+            {
+              "name": "showOnChange",
+              "type": {
+                "text": "string"
+              },
+              "description": "Whether the layover should show on change (input behavior only)",
+              "fieldName": "showOnChange"
+            },
+            {
+              "name": "showOnFocus",
+              "type": {
+                "text": "string"
+              },
+              "description": "Whether the layover should open on focus (input behavior only)",
+              "fieldName": "showOnFocus"
+            },
+            {
+              "name": "showOnHover",
+              "type": {
+                "text": "boolean"
+              },
+              "description": "Whether the layover should show on hover",
+              "fieldName": "showOnHover"
+            },
+            {
+              "name": "title",
+              "type": {
+                "text": "string"
+              },
+              "description": "The title of the layover - REQUIRED FOR A11Y",
+              "fieldName": "title"
+            },
+            {
+              "name": "type",
+              "type": {
+                "text": "string"
+              },
+              "description": "The type of layover, e.g., \"manual\", \"auto\", or \"hint\"",
+              "fieldName": "type"
+            },
+            {
+              "name": "useAutoPlacement",
+              "type": {
+                "text": "string"
+              },
+              "description": "Whether or not to use automatic placement for the layover (do not use with placement)",
+              "fieldName": "useAutoPlacement"
+            },
+            {
+              "name": "useFlip",
+              "type": {
+                "text": "string"
+              },
+              "description": "Whether or not to use the flip behavior (flips the element when it goes off-screen)",
+              "fieldName": "useFlip"
+            },
+            {
+              "name": "useHide",
+              "type": {
+                "text": "string"
+              },
+              "description": "Whether or not to use the hide behavior (hides element when trigger is not visible)",
+              "fieldName": "useHide"
+            }
+          ],
+          "superclass": {
+            "name": "LitElement",
+            "package": "lit"
+          },
+          "customElement": true,
+          "modulePath": "src/auro-layover.js"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "AuroLayover",
+          "declaration": {
+            "name": "AuroLayover",
+            "module": "src/auro-layover.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/ClickTracker.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "ClickTracker",
+          "members": [
+            {
+              "kind": "method",
+              "name": "#clickWasInside",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "event"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#handleClick",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "clickedInside"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "#handleDocumentClick",
+              "privacy": "private",
+              "static": true
+            },
+            {
+              "kind": "method",
+              "name": "#handleInsideClick",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "event"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "#handleOutsideClick",
+              "privacy": "private",
+              "parameters": [
+                {
+                  "name": "event"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "#instances",
+              "privacy": "private",
+              "static": true,
+              "default": "new Set()"
+            },
+            {
+              "kind": "field",
+              "name": "#listenerAttached",
+              "privacy": "private",
+              "type": {
+                "text": "boolean"
+              },
+              "static": true,
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "#onClick",
+              "privacy": "private",
+              "default": "onClick"
+            },
+            {
+              "kind": "field",
+              "name": "#onInnerClick",
+              "privacy": "private",
+              "default": "onInnerClick"
+            },
+            {
+              "kind": "field",
+              "name": "#onOuterClick",
+              "privacy": "private",
+              "default": "onOuterClick"
+            },
+            {
+              "kind": "field",
+              "name": "#target",
+              "privacy": "private",
+              "default": "target"
+            },
+            {
+              "kind": "method",
+              "name": "disconnect"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "ClickTracker",
+          "declaration": {
+            "name": "ClickTracker",
+            "module": "src/ClickTracker.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/index.js",
+      "declarations": [],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "AuroLayover",
+          "declaration": {
+            "name": "AuroLayover",
+            "module": "src/index.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/LayerManager.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "LayerManager\nManages a global stack of layover layers to ensure proper layering and closing behavior.",
+          "name": "LayerManager",
+          "members": [
+            {
+              "kind": "method",
+              "name": "#initializeStack",
+              "privacy": "private",
+              "description": "Ensures the global layover stack is available for managing active layover layers. \nThis method prepares the shared window state so other methods can reliably track layers."
+            },
+            {
+              "kind": "method",
+              "name": "addLayer",
+              "parameters": [
+                {
+                  "name": "layer",
+                  "type": {
+                    "text": "HTMLElement"
+                  }
+                }
+              ],
+              "description": "Adds a layer to the global layover stack and ensures it is treated as the topmost layer.\nThis method maintains layer ordering so the most recently added layover is tracked last."
+            },
+            {
+              "kind": "method",
+              "name": "hideLayer",
+              "parameters": [
+                {
+                  "name": "layer",
+                  "description": "The layer to attempt to hide while constraining to the top layer",
+                  "type": {
+                    "text": "HTMLElement"
+                  }
+                },
+                {
+                  "name": "callback",
+                  "description": "The callback to call if the layer should be hidden",
+                  "type": {
+                    "text": "Function"
+                  }
+                }
+              ],
+              "description": "Attempts to hide a layover layer while enforcing that only the active top layer is allowed to close.\nThis method coordinates layer closing behavior, invoking an optional callback when the hide is permitted."
+            },
+            {
+              "kind": "method",
+              "name": "removeLayer",
+              "parameters": [
+                {
+                  "name": "layer",
+                  "type": {
+                    "text": "HTMLElement"
+                  }
+                }
+              ],
+              "description": "Removes a layer from the global layover stack if it is currently tracked.\nThis method updates the shared stack so that closed or inactive layovers are no longer considered.",
+              "return": {
+                "type": {
+                  "text": ""
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "LayerManager",
+          "declaration": {
+            "name": "LayerManager",
+            "module": "src/LayerManager.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "src/registered.js",
+      "declarations": [],
+      "exports": []
+    }
+  ]
+}
