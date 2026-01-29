@@ -25,7 +25,7 @@
   "devDependencies": {
     "@aurodesignsystem/auro-cli": "^3.0.0",
     "@aurodesignsystem/auro-config": "^1.0.1",
-    "@aurodesignsystem/auro-library": "npm:@aurodesignsystem-dev/auro-library@0.0.0-pr187.1",
+    "@aurodesignsystem/auro-library": "5.9.0",
     "@aurodesignsystem/design-tokens": "^8.3.0",
     "@aurodesignsystem/webcorestylesheets": "^10.0.2",
     "@biomejs/biome": "^2.1.3",

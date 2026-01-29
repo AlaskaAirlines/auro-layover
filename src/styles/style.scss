@@ -12,31 +12,32 @@
   position: absolute;
 }
 
-.popover {
-  .popover-arrow {
-    position: absolute;
+.popover-arrow {
+  // We need to account for line-height specifically here
+  // This should be fine since there shouldn't be text content in the arrow
+  line-height: 1;
 
-    &.direction-down {
-      bottom: 0;
-      transform: translateY(100%);
-    }
-
-    &.direction-up {
-      top: 0;
-      transform: translateY(-100%);
-    }
-
-    &.direction-left {
-      left: 0;
-      transform: translateX(-100%);
-    }
-
-    &.direction-right {
-      right: 0;
-      transform: translateX(100%);
-    }
+  // Default down arrow (no transform needed)
+  &.arrow-down {
+    transform: rotate(0deg);
+  }
+  
+  // Left arrow - rotate 90 degrees clockwise
+  &.arrow-left {
+    transform: rotate(90deg);
+  }
+  
+  // Up arrow - rotate 180 degrees
+  &.arrow-up {
+    transform: rotate(180deg);
+  }
+  
+  // Right arrow - rotate 270 degrees clockwise (or -90 degrees)
+  &.arrow-right {
+    transform: rotate(270deg);
   }
 }
+
 
 .popover-trigger {
   margin: 0;

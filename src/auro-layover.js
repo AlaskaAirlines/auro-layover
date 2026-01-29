@@ -1,3 +1,4 @@
+import { ClickTracker } from "@aurodesignsystem/auro-library/scripts/runtime/ClickTracker/ClickTracker.mjs";
 import { FocusTrap } from "@aurodesignsystem/auro-library/scripts/runtime/FocusTrap/FocusTrap.mjs";
 import { StringBoolean } from "@aurodesignsystem/auro-library/scripts/runtime/lit-converters/string-boolean.js";
 import { PopoverPositioner } from "@aurodesignsystem/auro-library/scripts/runtime/popover/positioner.js";
@@ -6,6 +7,7 @@ import { html, LitElement } from "lit";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { createRef, ref } from "lit/directives/ref.js";
+import { LayerManager } from "./LayerManager";
 
 import styles from "./styles/style.scss";
 
@@ -66,6 +68,7 @@ export class AuroLayover extends LitElement {
     this._setDefaults(_DEFAULTS);
     this._createElementRefs();
     this._runtimeUtils = new AuroLibraryRuntimeUtils();
+    this._layerManager = new LayerManager();
   }
 
   /** INIT METHODS **/
@@ -182,6 +185,10 @@ export class AuroLayover extends LitElement {
 
       /** Internal state tracking the current behavior implementation */
       _currentBehaviorState: { type: String, state: true },
+
+      currentPlacement: { type: String, state: true },
+      currentArrowDirection: { type: String, state: true },
+      currentSide: { type: String, state: true },
     };
   }
 
@@ -221,13 +228,8 @@ export class AuroLayover extends LitElement {
    * @returns {void}
    */
   toggle() {
+    console.log("Layover | toggle()");
     this._open ? this.hide() : this.show();
-  }
-
-  get _shouldPosition() {
-    return ["dropdown", "tooltip", "input", "input-dropdown"].includes(
-      this.behavior,
-    );
   }
 
   /**
@@ -236,7 +238,16 @@ export class AuroLayover extends LitElement {
    * @private
    */
   show({ internal = false } = {}) {
+    console.log("Layover | show()");
     if (!this.popover || this.disabled) return;
+
+    // Add this layover to the stack if it's not already there
+    if (this._shouldCloseInLayers) {
+      // Add the layer to the global stack
+      this._layerManager.addLayer(this);
+      // Attach a click tracker to handle outside clicks
+      this._attachClickTracker();
+    }
 
     // Ensure the behavior is set up correctly before showing
     this._manageBehavior(this.behavior);
@@ -258,7 +269,7 @@ export class AuroLayover extends LitElement {
 
     // Focus the popover to ensure accessibility
     if (this._shouldAdjustFocus) {
-      this.popover.focus();
+      this.popover.focus({ preventScroll: true });
     }
 
     // Attach the focus trap to the popover if necessary
@@ -279,8 +290,15 @@ export class AuroLayover extends LitElement {
    * @returns {void}
    * @private
    */
-  hide({ internal = false } = {}) {
+  hide() {
+    console.log("Layover | hide()");
     if (!this.popover || this.disabled) return;
+
+    // Remove layer from the global stack
+    this._layerManager.removeLayer(this);
+
+    // Detach the click tracker
+    this._detachClickTracker();
 
     // Reset the body scroll to its default state
     this._resetBodyScroll();
@@ -295,24 +313,16 @@ export class AuroLayover extends LitElement {
     this._detachTabListener();
 
     // Hide the popover if it is currently open
-    if (!internal) this.popover.hidePopover();
+    this.popover.hidePopover();
 
     // Update shown to hide the popover via styles
     this.shown = false;
 
     // Focus the trigger element to ensure accessibility
     if (this._shouldAdjustFocus) {
-      // Save a reference to the current scroll position
-      const currentScrollY = window.scrollY;
-
       // Get and focus the trigger element
       const focusEl = this._triggerElInSlot || this.button;
       focusEl?.focus({ preventScroll: true });
-
-      // Not all browsers support preventScroll, so we need to make sure if the page scrolls we reset the scroll position
-      if (window.scrollY !== currentScrollY) {
-        window.scrollTo({ top: currentScrollY, behavior: "instant" });
-      }
     }
 
     // Dispatch relevant events
@@ -348,11 +358,47 @@ export class AuroLayover extends LitElement {
 
   disconnectedCallback() {
     super.disconnectedCallback();
+
+    // Clean up from global stack when component is disconnected
+    if (window.auroLayoverStack) {
+      const index = window.auroLayoverStack.indexOf(this);
+      if (index !== -1) {
+        window.auroLayoverStack.splice(index, 1);
+      }
+    }
+
+    // Clear closing reference if this was the closing layover
+    if (window.closingLayover === this) {
+      window.closingLayover = null;
+    }
+
     this._cleanupCurrentBehavior();
   }
 
   /** PRIVATE GETTERS **/
   // Utility getters that return values based on internal state or properties
+
+  get _shouldPosition() {
+    return ["dropdown", "tooltip", "input", "input-dropdown"].includes(
+      this.behavior,
+    );
+  }
+
+  /**
+   * Checks if a focus trap should be attached based on the behavior
+   * @returns {boolean}
+   * @private
+   */
+  get _shouldAttachFocusTrap() {
+    return (
+      !this._focusTrap &&
+      !["input", "input-dropdown", ...TOOLTIP_TYPES].includes(this.behavior)
+    );
+  }
+
+  get _shouldCloseInLayers() {
+    return ["dialog", "dialog-fullscreen", "dropdown"].includes(this.behavior);
+  }
 
   /**
    * Checks if the popover should adjust focus based on its behavior
@@ -369,17 +415,20 @@ export class AuroLayover extends LitElement {
    * @returns {object}
    */
   get _dropdownOptions() {
+    console.log(this.arrow, this.arrow?.clientHeight, this.arrow?.offsetHeight);
     const { placement, offset, inline, useHide, useAutoPlacement, useFlip } =
       this;
     return {
       ..._POSITIONER_DEFAULTS,
       arrowEl: this.arrow,
       placement,
-      offset,
       inline,
       useHide,
       useAutoPlacement,
       useFlip,
+
+      // Fallback to measuring the arrow element height if no offset is provided
+      offset: offset || this.arrow?.offsetHeight,
     };
   }
 
@@ -427,20 +476,38 @@ export class AuroLayover extends LitElement {
     return el ?? undefined;
   }
 
-  /**
-   * Checks if a focus trap should be attached based on the behavior
-   * @returns {boolean}
-   * @private
-   */
-  get _shouldAttachFocusTrap() {
-    return (
-      !this._focusTrap &&
-      !["input", "input-dropdown", ...TOOLTIP_TYPES].includes(this.behavior)
-    );
-  }
-
   /** PRIVATE METHODS **/
   // Private methods that are used internally within the component only
+
+  /**
+   * Handles the layered closing of layovers to prevent interference between multiple open layovers
+   * @param {Object} options - Options for hiding
+   * @param {boolean} options.internal - Whether this is an internal call
+   * @param {Event} options.event - The event that triggered the hide (optional)
+   * @returns {void}
+   * @private
+   */
+  _hideInLayers({ event = null } = {}) {
+    if (event) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    this._layerManager.hideLayer(this, () => this.hide());
+  }
+
+  _attachClickTracker() {
+    this._clickTracker = null;
+    this._clickTracker = new ClickTracker({
+      target: this.popover,
+      onOuterClick: (event) => this._hideInLayers({ event }),
+    });
+  }
+
+  _detachClickTracker() {
+    this._clickTracker?.disconnect();
+    this._clickTracker = null;
+  }
 
   /**
    * Matches the width of the popover to the trigger element's width or resets width style
@@ -465,13 +532,18 @@ export class AuroLayover extends LitElement {
    * @returns {string} - The type of the popover, either "manual", "auto", or "hint"
    */
   _calcType(behavior) {
-    if (INPUT_TYPES.includes(behavior)) return "manual";
-    if (DIALOG_TYPES.includes(behavior))
-      return this._hasTriggerContent ? "auto" : "manual";
-    if (DROPDOWN_TYPES.includes(behavior))
-      return this._hasTriggerContent ? "auto" : "manual";
-    if (TOOLTIP_TYPES.includes(behavior)) return "hint";
-    return "manual"; // Default fallback
+    switch (true) {
+      case TOOLTIP_TYPES.includes(behavior):
+        return "hint";
+
+      case INPUT_TYPES.includes(behavior):
+      case DIALOG_TYPES.includes(behavior):
+      case DROPDOWN_TYPES.includes(behavior):
+        return "manual";
+
+      default:
+        return "manual"; // Default fallback
+    }
   }
 
   /**
@@ -619,13 +691,20 @@ export class AuroLayover extends LitElement {
    */
   _attachPopoverPositioner() {
     if (this._positioningTarget && this.popover) {
-      this._positioner = new PopoverPositioner(
-        this._positioningTarget,
-        this.popover,
-        this._dropdownOptions,
-      );
+      this._positioner = new PopoverPositioner({
+        target: this._positioningTarget,
+        popover: this.popover,
+        options: this._dropdownOptions,
+        onPlacementChange: this._onPlacementChange,
+      });
     }
   }
+
+  _onPlacementChange = ({ placement, arrowDirection, side }) => {
+    this.currentPlacement = placement;
+    this.currentArrowDirection = arrowDirection;
+    this.currentSide = side;
+  };
 
   /**
    * Cancels the positioning of the popover if it is currently active
@@ -908,42 +987,23 @@ export class AuroLayover extends LitElement {
   /**
    * Runs before the popover is toggled by the browser
    * Handles the first part of the layered closing functionality
-   * Unfortunately, most browsers do not correctly implement event.preventDefault() on the toggle event
-   * This means we have to split the re-show functionality between beforetoggle and toggle events
    * @param {Event} event - The event triggered by the popover toggle
    * @returns {void}
    * @private
-   * */
+   */
   _handlePopoverBeforeToggle(event) {
     const isOpening = event.newState === "open";
 
     // Handle opening
     if (isOpening) {
       this._dispatchBeforeChangeEvent({ state: "shown" });
-      this.show({ internal: true });
       return;
     }
 
-    // Handle closing w/ functionality for handling layered closing
+    // Handle closing with layered management
     if (!isOpening) {
-      // If another layover is in the process of closing, prevent this one from closing
-      if (!!window.closingLayover && window.closingLayover !== this) {
-        event.preventDefault();
-        event.stopPropagation();
-
-        // Re-show the popover (this helps reduce flicker)
-        this.popover.showPopover();
-        return;
-      }
-
-      // This is now the closing layover
-      window.closingLayover = this;
-
-      // Dispatch before change event
       this._dispatchBeforeChangeEvent({ state: "hidden" });
-
-      // Hide the popover
-      this.hide({ internal: true });
+      return;
     }
   }
 
@@ -953,20 +1013,15 @@ export class AuroLayover extends LitElement {
    * @returns {void}
    */
   _handlePopoverToggle(event) {
-    const isOpen = event.newState === "open";
-    const isClosingLayover = window.closingLayover === this;
+    const isOpening = event.newState === "open";
 
-    // If we are closing
-    if (!isOpen) {
-      // If this is not the closing layover, make sure we don't hide
-      if (!isClosingLayover) this.popover.showPopover();
-
-      // Clear the closing layover reference after a tick if this is the closing layover
-      if (isClosingLayover)
-        setTimeout(() => {
-          window.closingLayover = null;
-        });
+    // Handle opening
+    if (isOpening) {
+      this.show({ internal: true });
+      return;
     }
+
+    // We don't need to handle closing state because all popovers are now manual so we are internally triggering all closes already
   }
 
   /**
@@ -1013,11 +1068,10 @@ export class AuroLayover extends LitElement {
    * */
   _renderTrigger() {
     // Return just the slot if the type is manual or input, neither of these types require a special wrapper
-    if (["manual", "input"].includes(this.type))
-      return this._renderTriggerSlot();
+    if (["input"].includes(this.type)) return this._renderTriggerSlot();
 
     // Return a button that is tied to the popover if the type is auto or hint
-    if (this.type === "auto" || this.type === "hint")
+    if (this.type === "auto" || this.type === "manual" || this.type === "hint")
       return html`
           <button
             ${ref(this._buttonRef)}
@@ -1033,25 +1087,6 @@ export class AuroLayover extends LitElement {
         `;
   }
 
-  get _arrowDirection() {
-    const directionsByPlacement = {
-      top: "down",
-      "top-start": "down",
-      "top-end": "down",
-      bottom: "up",
-      "bottom-start": "up",
-      "bottom-end": "up",
-      left: "right",
-      "left-start": "right",
-      "left-end": "right",
-      right: "left",
-      "right-start": "left",
-      "right-end": "left",
-    };
-
-    return directionsByPlacement[this.placement];
-  }
-
   /**
    * Renders the popover element
    * @private @returns {TemplateResult}
@@ -1059,12 +1094,12 @@ export class AuroLayover extends LitElement {
   _renderPopover() {
     const arrowClasses = {
       "popover-arrow": true,
-      [`direction-${this._arrowDirection}`]: true,
+      [`arrow-${this.currentArrowDirection}`]: true,
     };
 
     return html`
       <div 
-        part="popover"
+        part="${`popover popover-${this.currentSide}`}"
         ${ref(this._popoverRef)}
         popover="${ifDefined(!this.disabled ? this.type : undefined)}"
         id="popover"
@@ -1078,7 +1113,7 @@ export class AuroLayover extends LitElement {
         <div 
           ${ref(this._arrowElRef)}
           class="${classMap(arrowClasses)}"
-          part="arrow"
+          part="${`arrow arrow-${this.currentArrowDirection}`}"
         >
           <slot name="arrow" ${ref(this._arrowSlotRef)}></slot>
         </div>

@@ -99,6 +99,7 @@ import "@aurodesignsystem/auro-layover";
 <p>dropdown example</p>
 <auro-layover behavior="dropdown">
   <button type="button" slot="trigger">Open Dropdown</button>
+  <span slot="arrow">\/</span>
   <p>I am a dropdown popover. I should be positioned next to my parent element/trigger.</p>
   <input type="text" placeholder="I am an input inside a dropdown popover" />
   <textarea placeholder="I am a textarea inside a dropdown popover"></textarea>
@@ -217,6 +218,7 @@ The `<auro-layover>` element should be used in situations where users:
 <p>dropdown example</p>
 <auro-layover behavior="dropdown">
   <button type="button" slot="trigger">Open Dropdown</button>
+  <span slot="arrow">\/</span>
   <p>I am a dropdown popover. I should be positioned next to my parent element/trigger.</p>
   <input type="text" placeholder="I am an input inside a dropdown popover" />
   <textarea placeholder="I am a textarea inside a dropdown popover"></textarea>
