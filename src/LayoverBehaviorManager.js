@@ -7,13 +7,11 @@
  */
 
 import { BehaviorRegistry } from "./behaviors/BehaviorRegistry.js";
-import { LayerManager } from "./LayerManager.js";
 
 export class LayoverBehaviorManager {
   constructor(component, featureManager) {
     this.component = component;
     this.featureManager = featureManager;
-    this.layerManager = new LayerManager();
 
     // Current active behavior instance
     this.currentBehavior = null;

@@ -23,9 +23,5 @@ export class DropdownBehavior extends BaseBehavior {
     // Dropdown-specific cleanup if needed
   }
 
-  onShow({ internal = false } = {}) {
-    if (this.component.shown) {
-      this.featureManager.attachPopoverPositioner();
-    }
-  }
+  onShow({ internal = false } = {}) {}
 }

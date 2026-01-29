@@ -25,9 +25,8 @@ export class TooltipBehavior extends BaseBehavior {
   }
 
   onShow({ internal = false } = {}) {
-    if (this.component.shown) {
-      this.featureManager.attachPopoverPositioner();
-    }
+    // Features are now managed by the main behavior manager system
+    // No need to manually call individual feature methods
   }
 
   #bindHover() {

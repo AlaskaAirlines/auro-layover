@@ -52,17 +52,21 @@ export class AuroLayover extends LitElement {
     AuroLibraryRuntimeUtils.prototype.registerComponent(name, AuroLayover);
   }
 
+  #behaviorManager;
+  #featureManager;
+  #runtimeUtils;
+
   /** CONSTRUCTOR **/
   constructor() {
     super();
 
     this.#setDefaults(_DEFAULTS);
     this.#createElementRefs();
-    this._runtimeUtils = new AuroLibraryRuntimeUtils();
-    this._featureManager = new LayoverFeatureManager(this);
-    this._behaviorManager = new LayoverBehaviorManager(
+    this.#runtimeUtils = new AuroLibraryRuntimeUtils();
+    this.#featureManager = new LayoverFeatureManager(this);
+    this.#behaviorManager = new LayoverBehaviorManager(
       this,
-      this._featureManager,
+      this.#featureManager,
     );
   }
 
@@ -244,7 +248,7 @@ export class AuroLayover extends LitElement {
     if (!this.popover || this.disabled) return;
 
     // Let the behavior manager handle all show logic and feature coordination
-    this._behaviorManager.show({ internal });
+    this.#behaviorManager.show({ internal });
 
     // The popover is positioned and ready, so we can set shown to true
     this.shown = true;
@@ -262,7 +266,7 @@ export class AuroLayover extends LitElement {
     if (!this.popover || this.disabled) return;
 
     // Let the behavior manager handle all hide logic and feature coordination
-    this._behaviorManager.hide();
+    this.#behaviorManager.hide();
 
     // Update shown to hide the popover via styles
     this.shown = false;
@@ -276,8 +280,8 @@ export class AuroLayover extends LitElement {
 
   connectedCallback() {
     super.connectedCallback();
-    this._runtimeUtils = new AuroLibraryRuntimeUtils();
-    this._runtimeUtils.handleComponentTagRename(this, "auro-layover-composed");
+    this.#runtimeUtils = new AuroLibraryRuntimeUtils();
+    this.#runtimeUtils.handleComponentTagRename(this, "auro-layover-composed");
   }
 
   updated(changedProperties) {
@@ -294,7 +298,7 @@ export class AuroLayover extends LitElement {
         changedProperties.has(prop),
       )
     ) {
-      this._behaviorManager.setBehavior(this.behavior);
+      this.#behaviorManager.setBehavior(this.behavior);
     }
   }
 
@@ -315,7 +319,7 @@ export class AuroLayover extends LitElement {
     }
 
     // Let the behavior manager handle all cleanup
-    this._behaviorManager.cleanup();
+    this.#behaviorManager.cleanup();
   }
 
   /** PRIVATE GETTERS **/
