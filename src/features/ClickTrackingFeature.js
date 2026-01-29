@@ -7,7 +7,7 @@ export class ClickTrackingFeature extends BaseFeature {
     this._clickTracker = null;
   }
 
-  attach(behaviorConfig, context = {}) {
+  attach(behaviorConfig) {
     if (!behaviorConfig.requiresClickTracker || this._clickTracker) {
       return;
     }
@@ -18,7 +18,7 @@ export class ClickTrackingFeature extends BaseFeature {
     });
   }
 
-  detach(behaviorConfig, context = {}) {
+  detach() {
     if (this._clickTracker) {
       this._clickTracker.disconnect();
       this._clickTracker = null;

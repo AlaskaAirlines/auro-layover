@@ -8,7 +8,7 @@ export class FocusTrapFeature extends BaseFeature {
     this._tabHandler = null;
   }
 
-  attach(behaviorConfig, context = {}) {
+  attach(behaviorConfig) {
     if (!behaviorConfig.requiresFocusTrap || this._focusTrap) {
       return;
     }
@@ -19,7 +19,7 @@ export class FocusTrapFeature extends BaseFeature {
     }
   }
 
-  detach(behaviorConfig, context = {}) {
+  detach() {
     if (this._focusTrap) {
       this._focusTrap.disconnect();
       this._focusTrap = null;

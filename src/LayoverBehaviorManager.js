@@ -18,20 +18,6 @@ export class LayoverBehaviorManager {
   }
 
   /**
-   * Calculates the type of the popover based on its behavior
-   * @param {string} behavior
-   * @returns {string} - The type of the popover
-   */
-  #calcType(behavior) {
-    const config = BehaviorRegistry.getBehaviorConfig(
-      behavior,
-      this.component,
-      this.featureManager,
-    );
-    return config.type;
-  }
-
-  /**
    * Centralized method to manage behavior transitions and state
    * @param {string} newBehavior - The behavior to transition to
    * @returns {void}

@@ -31,18 +31,17 @@ export class LayoverFeatureManager {
   /**
    * Main entry point for managing all features based on behavior and operation
    * @param {Object} options - Configuration options
-   * @param {string} options.behavior - The behavior type
    * @param {Object} options.behaviorConfig - The behavior configuration object
    * @param {string} options.operation - "attach" or "detach"
    * @param {Object} options.context - Additional context
    */
-  manageFeatures({ behavior, behaviorConfig, operation, context = {} }) {
+  manageFeatures({ behaviorConfig, operation, context = {} }) {
     switch (operation) {
       case "attach":
-        this.#attachFeatures(behavior, behaviorConfig, context);
+        this.#attachFeatures(behaviorConfig, context);
         break;
       case "detach":
-        this.#detachFeatures(behavior, behaviorConfig, context);
+        this.#detachFeatures(behaviorConfig, context);
         break;
       default:
         console.warn(`FeatureManager: Unknown operation "${operation}"`);
@@ -51,18 +50,17 @@ export class LayoverFeatureManager {
 
   /**
    * Attaches all features needed based on behavior configuration
-   * @param {string} behavior
    * @param {Object} behaviorConfig
    * @param {Object} context
    */
-  #attachFeatures(behavior, behaviorConfig, context) {
+  #attachFeatures(behaviorConfig, context) {
     // Attach each feature - they handle their own conditional logic
-    this.layerManagement.attach(behaviorConfig, context);
-    this.clickTracking.attach(behaviorConfig, context);
-    this.bodyScroll.attach(behaviorConfig, context);
-    this.positioning.attach(behaviorConfig, context);
-    this.focusTrap.attach(behaviorConfig, context);
-    this.widthMatching.attach(behaviorConfig, context);
+    this.layerManagement.attach(behaviorConfig);
+    this.clickTracking.attach(behaviorConfig);
+    this.bodyScroll.attach(behaviorConfig);
+    this.positioning.attach(behaviorConfig);
+    this.focusTrap.attach(behaviorConfig);
+    this.widthMatching.attach(behaviorConfig);
     this.focusManagement.attach(behaviorConfig, context);
 
     // Show popover (unless internal)
@@ -73,19 +71,18 @@ export class LayoverFeatureManager {
 
   /**
    * Detaches all features for the given behavior
-   * @param {string} behavior
    * @param {Object} behaviorConfig
    * @param {Object} context
    */
-  #detachFeatures(behavior, behaviorConfig, context) {
+  #detachFeatures(behaviorConfig, context) {
     // Detach all features
-    this.layerManagement.detach(behaviorConfig, context);
-    this.clickTracking.detach(behaviorConfig, context);
-    this.bodyScroll.detach(behaviorConfig, context);
-    this.positioning.detach(behaviorConfig, context);
-    this.focusTrap.detach(behaviorConfig, context);
-    this.widthMatching.detach(behaviorConfig, context);
-    this.focusManagement.detach(behaviorConfig, context);
+    this.layerManagement.detach();
+    this.clickTracking.detach();
+    this.bodyScroll.detach();
+    this.positioning.detach();
+    this.focusTrap.detach();
+    this.widthMatching.detach();
+    this.focusManagement.detach(behaviorConfig);
 
     // Hide popover
     if (this.component.popover) {

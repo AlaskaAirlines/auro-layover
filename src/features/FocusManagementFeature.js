@@ -7,7 +7,7 @@ export class FocusManagementFeature extends BaseFeature {
     }
   }
 
-  detach(behaviorConfig, context = {}) {
+  detach(behaviorConfig) {
     if (behaviorConfig.shouldAdjustFocus) {
       this.#focusTrigger();
     }

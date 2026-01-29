@@ -553,7 +553,7 @@ export class AuroLayover extends LitElement {
             part="popover-trigger"
             class="popover-trigger"
             type="button"
-            popovertarget="${ifDefined(!this.disabled ? "popover" : undefined)}"
+            popovertarget="${ifDefined(this.disabled ? undefined : "popover")}"
             tabindex="-1"
           >
             ${this._renderTriggerSlot()}
@@ -575,7 +575,7 @@ export class AuroLayover extends LitElement {
       <div 
         part="${`popover popover-${this.currentSide}`}"
         ${ref(this._popoverRef)}
-        popover="${ifDefined(!this.disabled ? this.type : undefined)}"
+        popover="${ifDefined(this.disabled ? undefined : this.type)}"
         id="popover"
         class="popover"
         role="dialog"

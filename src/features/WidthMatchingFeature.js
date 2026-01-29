@@ -1,7 +1,7 @@
 import { BaseFeature } from "./BaseFeature.js";
 
 export class WidthMatchingFeature extends BaseFeature {
-  attach(behaviorConfig, context = {}) {
+  attach(behaviorConfig) {
     if (behaviorConfig.matchWidth) {
       this.#matchWidth();
     } else {
@@ -9,7 +9,7 @@ export class WidthMatchingFeature extends BaseFeature {
     }
   }
 
-  detach(behaviorConfig, context = {}) {
+  detach() {
     this.#resetWidth();
   }
 

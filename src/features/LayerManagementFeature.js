@@ -6,7 +6,7 @@ export class LayerManagementFeature extends BaseFeature {
     this._isInLayer = false;
   }
 
-  attach(behaviorConfig, context = {}) {
+  attach(behaviorConfig) {
     if (behaviorConfig.shouldCloseInLayers && !this._isInLayer) {
       // Use proper encapsulation: Feature -> FeatureManager -> LayerManager
       this.featureManager.requestAddToLayer();
@@ -14,7 +14,7 @@ export class LayerManagementFeature extends BaseFeature {
     }
   }
 
-  detach(behaviorConfig, context = {}) {
+  detach() {
     if (this._isInLayer) {
       // Use proper encapsulation: Feature -> FeatureManager -> LayerManager
       this.featureManager.requestRemoveFromLayer();

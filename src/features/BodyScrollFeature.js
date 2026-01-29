@@ -6,14 +6,14 @@ export class BodyScrollFeature extends BaseFeature {
     this._isDisabled = false;
   }
 
-  attach(behaviorConfig, context = {}) {
+  attach(behaviorConfig) {
     if (this.#shouldDisableBodyScroll(behaviorConfig) && !this._isDisabled) {
       document.documentElement.style.overflow = "hidden";
       this._isDisabled = true;
     }
   }
 
-  detach(behaviorConfig, context = {}) {
+  detach() {
     if (this._isDisabled) {
       document.documentElement.style.overflow = null;
       this._isDisabled = false;

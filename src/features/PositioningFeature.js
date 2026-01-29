@@ -7,7 +7,7 @@ export class PositioningFeature extends BaseFeature {
     this._positioner = null;
   }
 
-  attach(behaviorConfig, context = {}) {
+  attach(behaviorConfig) {
     if (!behaviorConfig.requiresPositioning || this._positioner) {
       return;
     }
@@ -22,7 +22,7 @@ export class PositioningFeature extends BaseFeature {
     }
   }
 
-  detach(behaviorConfig, context = {}) {
+  detach() {
     this.#resetPositionStyles();
     if (this._positioner) {
       this._positioner.stop();
