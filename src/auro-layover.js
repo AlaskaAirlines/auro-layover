@@ -232,7 +232,6 @@ export class AuroLayover extends LitElement {
    * @returns {void}
    */
   toggle() {
-    console.log("Layover | toggle()");
     this.open ? this.hide() : this.show();
   }
 
@@ -242,7 +241,6 @@ export class AuroLayover extends LitElement {
    * @private
    */
   show({ internal = false } = {}) {
-    console.log("Layover | show()");
     if (!this.popover || this.disabled) return;
 
     // Let the behavior manager handle all show logic and feature coordination
@@ -261,7 +259,6 @@ export class AuroLayover extends LitElement {
    * @private
    */
   hide() {
-    console.log("Layover | hide()");
     if (!this.popover || this.disabled) return;
 
     // Let the behavior manager handle all hide logic and feature coordination

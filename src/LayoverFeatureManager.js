@@ -2,9 +2,6 @@ import { ClickTracker } from "@aurodesignsystem/auro-library/scripts/runtime/Cli
 import { FocusTrap } from "@aurodesignsystem/auro-library/scripts/runtime/FocusTrap/FocusTrap.mjs";
 import { PopoverPositioner } from "@aurodesignsystem/auro-library/scripts/runtime/popover/positioner.js";
 
-const INPUT_TYPES = ["input", "input-fullscreen", "input-dropdown"];
-const TOOLTIP_TYPES = ["tooltip"];
-
 /**
  * LayoverFeatureManager
  *
@@ -27,16 +24,17 @@ export class LayoverFeatureManager {
    * Main entry point for managing all features based on behavior and operation
    * @param {Object} options - Configuration options
    * @param {string} options.behavior - The behavior type
+   * @param {Object} options.behaviorConfig - The behavior configuration object
    * @param {string} options.operation - "attach" or "detach"
-   * @param {Object} options.context - Additional context (e.g., {internal: false} for show)
+   * @param {Object} options.context - Additional context
    */
-  manageFeatures({ behavior, operation, context = {} }) {
+  manageFeatures({ behavior, behaviorConfig, operation, context = {} }) {
     switch (operation) {
       case "attach":
-        this._attachFeatures(behavior, context);
+        this.#attachFeatures(behavior, behaviorConfig, context);
         break;
       case "detach":
-        this._detachFeatures(behavior, context);
+        this.#detachFeatures(behavior, behaviorConfig, context);
         break;
       default:
         console.warn(`FeatureManager: Unknown operation "${operation}"`);
@@ -44,33 +42,46 @@ export class LayoverFeatureManager {
   }
 
   /**
-   * Attaches all features needed for the given behavior
+   * Attaches all features needed based on behavior configuration
    * @param {string} behavior
+   * @param {Object} behaviorConfig
    * @param {Object} context
    */
-  _attachFeatures(behavior, context) {
+  #attachFeatures(behavior, behaviorConfig, context) {
     // Layer management and click tracking
-    if (this.shouldCloseInLayers(behavior)) {
+    if (behaviorConfig.shouldCloseInLayers) {
       this.component._behaviorManager.layerManager.addLayer(this.component);
+    }
+
+    if (behaviorConfig.requiresClickTracker) {
       this.attachClickTracker();
     }
 
     // Width matching
-    this.matchPopoverToTriggerWidth();
+    if (behaviorConfig.matchWidth) {
+      this.matchPopoverToTriggerWidth();
+    }
 
     // Body scroll control
-    this.disableBodyScroll();
+    if (behaviorConfig.requiresBodyScrollDisabled) {
+      this.disableBodyScroll();
+    }
 
     // Positioning
-    if (this.shouldPosition(behavior)) {
+    if (behaviorConfig.requiresPositioning) {
       this.attachPopoverPositioner();
     } else {
       this.detachPopoverPositioner();
     }
 
     // Focus management
-    this.focusPopover();
-    this.attachFocusTrap();
+    if (behaviorConfig.shouldAdjustFocus) {
+      this.focusPopover();
+    }
+
+    if (behaviorConfig.requiresFocusTrap) {
+      this.attachFocusTrap();
+    }
 
     // Show popover (unless internal)
     if (!context.internal) {
@@ -81,9 +92,10 @@ export class LayoverFeatureManager {
   /**
    * Detaches all features for the given behavior
    * @param {string} behavior
+   * @param {Object} behaviorConfig
    * @param {Object} context
    */
-  _detachFeatures(behavior, context) {
+  #detachFeatures(behavior, behaviorConfig, context) {
     // Layer management
     this.component._behaviorManager.layerManager.removeLayer(this.component);
 
@@ -98,57 +110,30 @@ export class LayoverFeatureManager {
     this.component.popover.hidePopover();
 
     // Focus management
-    this.focusTrigger();
+    if (behaviorConfig?.shouldAdjustFocus) {
+      this.focusTrigger();
+    }
   }
 
   /**
-   * Determines if positioning should be enabled based on behavior
-   * @param {string} behavior
+   * Determines if focus trap should be attached based on behavior and current state
+   * @param {Object} behaviorConfig - The behavior configuration
    * @returns {boolean}
    */
-  shouldPosition(behavior) {
-    return ["dropdown", "tooltip", "input", "input-dropdown"].includes(
-      behavior,
-    );
+  shouldAttachFocusTrap(behaviorConfig) {
+    return !this._focusTrap && behaviorConfig.requiresFocusTrap;
   }
 
   /**
-   * Determines if focus trap should be attached based on behavior
-   * @param {string} behavior
+   * Determines if body scroll should be disabled based on behavior and component settings
+   * @param {Object} behaviorConfig - The behavior configuration
    * @returns {boolean}
    */
-  shouldAttachFocusTrap(behavior) {
+  shouldDisableBodyScroll(behaviorConfig) {
     return (
-      !this._focusTrap &&
-      !["input", "input-dropdown", ...TOOLTIP_TYPES].includes(behavior)
+      behaviorConfig.requiresBodyScrollDisabled &&
+      !this.component.allowBodyScroll
     );
-  }
-
-  /**
-   * Determines if layover should close in layers based on behavior
-   * @param {string} behavior
-   * @returns {boolean}
-   */
-  shouldCloseInLayers(behavior) {
-    return ["dialog", "dialog-fullscreen", "dropdown"].includes(behavior);
-  }
-
-  /**
-   * Determines if focus should be adjusted based on behavior
-   * @param {string} behavior
-   * @returns {boolean}
-   */
-  shouldAdjustFocus(behavior) {
-    return ![...INPUT_TYPES, ...TOOLTIP_TYPES].includes(behavior);
-  }
-
-  /**
-   * Determines if body scroll should be disabled based on behavior
-   * @param {string} behavior
-   * @returns {boolean}
-   */
-  shouldDisableBodyScroll(behavior) {
-    return ["dialog"].includes(behavior) && !this.component.allowBodyScroll;
   }
 
   /**
@@ -206,7 +191,12 @@ export class LayoverFeatureManager {
    * @returns {void}
    */
   attachFocusTrap() {
-    if (this.shouldAttachFocusTrap(this.component.behavior)) {
+    // This method is called from _attachFeatures with behavior config available
+    // We need the behavior config to determine if focus trap should be attached
+    if (
+      !this._focusTrap &&
+      this.component._currentBehaviorConfig?.requiresFocusTrap
+    ) {
       this._focusTrap = new FocusTrap(this.component.popover, true);
       this.attachTabListener();
     }
@@ -229,7 +219,7 @@ export class LayoverFeatureManager {
    */
   attachTabListener() {
     this._tabListener = true;
-    this.component.addEventListener("keydown", this._handleFirstTab);
+    this.component.addEventListener("keydown", this.#handleFirstTab);
   }
 
   /**
@@ -237,7 +227,7 @@ export class LayoverFeatureManager {
    * @returns {void}
    */
   detachTabListener() {
-    this.component.removeEventListener("keydown", this._handleFirstTab);
+    this.component.removeEventListener("keydown", this.#handleFirstTab);
     this._tabListener = false;
   }
 
@@ -246,7 +236,7 @@ export class LayoverFeatureManager {
    * @param {KeyboardEvent} e
    * @returns {void}
    */
-  _handleFirstTab = (e) => {
+  #handleFirstTab = (e) => {
     if (e.key === "Tab") {
       // Guard Clause: Ensure focus trap exists
       if (!this._focusTrap) return;
@@ -313,7 +303,11 @@ export class LayoverFeatureManager {
    * @returns {void}
    */
   disableBodyScroll() {
-    if (this.shouldDisableBodyScroll(this.component.behavior)) {
+    // Check behavior config and component allowBodyScroll property
+    if (
+      this.component._currentBehaviorConfig?.requiresBodyScrollDisabled &&
+      !this.component.allowBodyScroll
+    ) {
       document.documentElement.style.overflow = "hidden";
     }
   }
@@ -348,9 +342,8 @@ export class LayoverFeatureManager {
    * @returns {void}
    */
   focusPopover() {
-    if (this.shouldAdjustFocus(this.component.behavior)) {
-      this.component.popover.focus({ preventScroll: true });
-    }
+    // This is called from _attachFeatures where behavior config is already checked
+    this.component.popover.focus({ preventScroll: true });
   }
 
   /**
@@ -358,11 +351,10 @@ export class LayoverFeatureManager {
    * @returns {void}
    */
   focusTrigger() {
-    if (this.shouldAdjustFocus(this.component.behavior)) {
-      // Get and focus the trigger element
-      const focusEl = this.component._triggerElInSlot || this.component.button;
-      focusEl?.focus({ preventScroll: true });
-    }
+    // This is called from _detachFeatures where behavior config is already checked
+    // Get and focus the trigger element
+    const focusEl = this.component._triggerElInSlot || this.component.button;
+    focusEl?.focus({ preventScroll: true });
   }
 
   /**
