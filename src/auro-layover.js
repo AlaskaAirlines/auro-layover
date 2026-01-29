@@ -1,13 +1,11 @@
-import { ClickTracker } from "@aurodesignsystem/auro-library/scripts/runtime/ClickTracker/ClickTracker.mjs";
-import { FocusTrap } from "@aurodesignsystem/auro-library/scripts/runtime/FocusTrap/FocusTrap.mjs";
 import { StringBoolean } from "@aurodesignsystem/auro-library/scripts/runtime/lit-converters/string-boolean.js";
-import { PopoverPositioner } from "@aurodesignsystem/auro-library/scripts/runtime/popover/positioner.js";
 import AuroLibraryRuntimeUtils from "@aurodesignsystem/auro-library/scripts/utils/runtimeUtils.mjs";
 import { html, LitElement } from "lit";
 import { classMap } from "lit/directives/class-map.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { createRef, ref } from "lit/directives/ref.js";
-import { LayerManager } from "./LayerManager";
+import { LayoverBehaviorManager } from "./LayoverBehaviorManager";
+import { LayoverFeatureManager } from "./LayoverFeatureManager";
 
 import styles from "./styles/style.scss";
 
@@ -34,20 +32,13 @@ const _POSITIONER_DEFAULTS = {
   strategy: "absolute",
 };
 
-const INPUT_TYPES = ["input", "input-fullscreen", "input-dropdown"];
-const DIALOG_TYPES = ["dialog", "dialog-fullscreen"];
-const DROPDOWN_TYPES = ["dropdown"];
-const TOOLTIP_TYPES = ["tooltip"];
-
-const _NO_INPUT_ERROR =
-  "\nAuroLayover: The input behavior requires an input element to be passed to the trigger slot.\n\nExample:\n<auro-layover>\n\t<auro-input slot='trigger'></auro-input>\n</auro-layover>\n";
 const _MULTIPLE_TRIGGER_ELEMENTS_ERROR =
   "\nAuroLayover: The input behavior requires a single trigger element to be passed to the trigger slot.\n\nExample:\n<auro-layover>\n\t<auro-button slot='trigger'>Click me</auro-button>\n</auro-layover>\n\nPassing more than one element may lead to undesireable behavior.\n";
 const _TEXT_NODE_IN_TRIGGER_SLOT_ERROR =
   "\nAuroLayover: The trigger slot should not contain text nodes.\n\nExample:\n<auro-layover>\n\t<auro-button slot='trigger'>Click me</auro-button>\n</auro-layover>\n";
 
 /**
- * AuroLayover is a web component that provides a customizable popover element.
+ * AuroLayover is a web component that provides a customizable popover element with composed behavior management.
  * It supports various behaviors such as dialog, dropdown, tooltip, and input.
  * @fires auro-layover-shown - Fired when the layover is shown. Event detail contains {target: AuroLayover, newState: "shown"}.
  * @fires auro-layover-hidden - Fired when the layover is hidden. Event detail contains {target: AuroLayover, newState: "hidden"}.
@@ -65,17 +56,21 @@ export class AuroLayover extends LitElement {
   constructor() {
     super();
 
-    this._setDefaults(_DEFAULTS);
-    this._createElementRefs();
+    this.#setDefaults(_DEFAULTS);
+    this.#createElementRefs();
     this._runtimeUtils = new AuroLibraryRuntimeUtils();
-    this._layerManager = new LayerManager();
+    this._featureManager = new LayoverFeatureManager(this);
+    this._behaviorManager = new LayoverBehaviorManager(
+      this,
+      this._featureManager,
+    );
   }
 
   /** INIT METHODS **/
   // These methods are called from the constructor when the component is initialized
 
   /** Creates refs for elements in the template @returns {void} @private */
-  _createElementRefs() {
+  #createElementRefs() {
     // A reference to the popover element itself
     this._popoverRef = createRef();
 
@@ -101,7 +96,7 @@ export class AuroLayover extends LitElement {
    * @returns {void}
    * @private
    * */
-  _setDefaults(defaults) {
+  #setDefaults(defaults) {
     Object.keys(defaults).forEach((key) => {
       if (this[key] === undefined) this[key] = defaults[key];
     });
@@ -158,9 +153,6 @@ export class AuroLayover extends LitElement {
       /** The minimum number of characters the user must type before the popover is shown */
       minInputLength: { type: Number, reflect: false },
 
-      /** A reference to the input to attach to for input behavior */
-      input: { type: Object, state: true },
-
       /** Whether or not to use the hide behavior (hides element when trigger is not visible) */
       useHide: { type: String, reflect: false, converter: StringBoolean },
 
@@ -177,17 +169,29 @@ export class AuroLayover extends LitElement {
       /** Whether or not the layover should try to align to an inline element like a hyperlink */
       inline: { type: String, reflect: false, converter: StringBoolean },
 
-      /** Whether the layover is open or not */
-      _open: { type: Boolean, reflect: false, state: true },
+      /**
+       * INTERNAL STATE PROPERTIES
+       */
 
-      /** Whether the trigger slot contains any elements */
-      _hasTriggerContent: { type: Boolean, reflect: false, state: true },
+      /** A reference to the input to attach to for input behavior @private */
+      input: { type: Object, state: true },
 
-      /** Internal state tracking the current behavior implementation */
-      _currentBehaviorState: { type: String, state: true },
+      /** Whether the layover is open or not @private */
+      open: { type: Boolean, reflect: false, state: true },
 
+      /** Whether the trigger slot contains any elements @private */
+      hasTriggerContent: { type: Boolean, reflect: false, state: true },
+
+      /** Internal state tracking the current behavior implementation @private */
+      currentBehaviorState: { type: String, state: true },
+
+      /** current placement of the layover (e.g., "bottom-start", "top-end") @private */
       currentPlacement: { type: String, state: true },
+
+      /** current direction of the arrow (e.g., "top", "bottom", "left", "right") @private */
       currentArrowDirection: { type: String, state: true },
+
+      /** current side of the layover (e.g., "top", "bottom", "left", "right") @private */
       currentSide: { type: String, state: true },
     };
   }
@@ -229,7 +233,7 @@ export class AuroLayover extends LitElement {
    */
   toggle() {
     console.log("Layover | toggle()");
-    this._open ? this.hide() : this.show();
+    this.open ? this.hide() : this.show();
   }
 
   /**
@@ -241,42 +245,8 @@ export class AuroLayover extends LitElement {
     console.log("Layover | show()");
     if (!this.popover || this.disabled) return;
 
-    // Add this layover to the stack if it's not already there
-    if (this._shouldCloseInLayers) {
-      // Add the layer to the global stack
-      this._layerManager.addLayer(this);
-      // Attach a click tracker to handle outside clicks
-      this._attachClickTracker();
-    }
-
-    // Ensure the behavior is set up correctly before showing
-    this._manageBehavior(this.behavior);
-
-    // Match the width of the popover to the trigger element
-    this._matchPopoverToTriggerWidth();
-
-    // Disable body scroll if the behavior requires it
-    this._disableBodyScroll();
-
-    // Position the popover if behavior requires it
-    if (this._shouldPosition) {
-      this._attachPopoverPositioner();
-
-      // Otherwise, reset the positioning styles
-    } else {
-      this._detachPopoverPositioner();
-    }
-
-    // Focus the popover to ensure accessibility
-    if (this._shouldAdjustFocus) {
-      this.popover.focus({ preventScroll: true });
-    }
-
-    // Attach the focus trap to the popover if necessary
-    this._attachFocusTrap();
-
-    // Show the popover if it this wasn't called internally by the beforetoggle event listener
-    if (!internal) this.popover.showPopover();
+    // Let the behavior manager handle all show logic and feature coordination
+    this._behaviorManager.show({ internal });
 
     // The popover is positioned and ready, so we can set shown to true
     this.shown = true;
@@ -294,36 +264,11 @@ export class AuroLayover extends LitElement {
     console.log("Layover | hide()");
     if (!this.popover || this.disabled) return;
 
-    // Remove layer from the global stack
-    this._layerManager.removeLayer(this);
-
-    // Detach the click tracker
-    this._detachClickTracker();
-
-    // Reset the body scroll to its default state
-    this._resetBodyScroll();
-
-    // Stop positioning the popover
-    this._detachPopoverPositioner();
-
-    // Detach the focus trap if it exists
-    this._detachFocusTrap();
-
-    // Detach the tab listener if it exists
-    this._detachTabListener();
-
-    // Hide the popover if it is currently open
-    this.popover.hidePopover();
+    // Let the behavior manager handle all hide logic and feature coordination
+    this._behaviorManager.hide();
 
     // Update shown to hide the popover via styles
     this.shown = false;
-
-    // Focus the trigger element to ensure accessibility
-    if (this._shouldAdjustFocus) {
-      // Get and focus the trigger element
-      const focusEl = this._triggerElInSlot || this.button;
-      focusEl?.focus({ preventScroll: true });
-    }
 
     // Dispatch relevant events
     this._dispatchHideEvent();
@@ -335,7 +280,7 @@ export class AuroLayover extends LitElement {
   connectedCallback() {
     super.connectedCallback();
     this._runtimeUtils = new AuroLibraryRuntimeUtils();
-    this._runtimeUtils.handleComponentTagRename(this, "auro-layover");
+    this._runtimeUtils.handleComponentTagRename(this, "auro-layover-composed");
   }
 
   updated(changedProperties) {
@@ -346,13 +291,13 @@ export class AuroLayover extends LitElement {
         this.behavior = "input";
     }
 
-    // If the behavior changes or trigger content changes, manage behavior transition
+    // If the behavior changes or trigger content changes, update behavior
     if (
-      ["behavior", "_hasTriggerContent", "input"].some((prop) =>
+      ["behavior", "hasTriggerContent", "input"].some((prop) =>
         changedProperties.has(prop),
       )
     ) {
-      this._manageBehavior(this.behavior);
+      this._behaviorManager.setBehavior(this.behavior);
     }
   }
 
@@ -372,42 +317,12 @@ export class AuroLayover extends LitElement {
       window.closingLayover = null;
     }
 
-    this._cleanupCurrentBehavior();
+    // Let the behavior manager handle all cleanup
+    this._behaviorManager.cleanup();
   }
 
   /** PRIVATE GETTERS **/
   // Utility getters that return values based on internal state or properties
-
-  get _shouldPosition() {
-    return ["dropdown", "tooltip", "input", "input-dropdown"].includes(
-      this.behavior,
-    );
-  }
-
-  /**
-   * Checks if a focus trap should be attached based on the behavior
-   * @returns {boolean}
-   * @private
-   */
-  get _shouldAttachFocusTrap() {
-    return (
-      !this._focusTrap &&
-      !["input", "input-dropdown", ...TOOLTIP_TYPES].includes(this.behavior)
-    );
-  }
-
-  get _shouldCloseInLayers() {
-    return ["dialog", "dialog-fullscreen", "dropdown"].includes(this.behavior);
-  }
-
-  /**
-   * Checks if the popover should adjust focus based on its behavior
-   * @returns {boolean}
-   * @private
-   */
-  get _shouldAdjustFocus() {
-    return ![...INPUT_TYPES, ...TOOLTIP_TYPES].includes(this.behavior);
-  }
 
   /**
    * Generates the dropdown options based on internal properties and defined defaults
@@ -415,7 +330,6 @@ export class AuroLayover extends LitElement {
    * @returns {object}
    */
   get _dropdownOptions() {
-    console.log(this.arrow, this.arrow?.clientHeight, this.arrow?.offsetHeight);
     const { placement, offset, inline, useHide, useAutoPlacement, useFlip } =
       this;
     return {
@@ -430,11 +344,6 @@ export class AuroLayover extends LitElement {
       // Fallback to measuring the arrow element height if no offset is provided
       offset: offset || this.arrow?.offsetHeight,
     };
-  }
-
-  /** Whether or not the body scroll should be disabled */
-  get _shouldDisableBodyScroll() {
-    return ["dialog"].includes(this.behavior) && !this.allowBodyScroll;
   }
 
   /**
@@ -474,364 +383,6 @@ export class AuroLayover extends LitElement {
 
     // Return the first element that matches the tagName check, or undefined if no element is found
     return el ?? undefined;
-  }
-
-  /** PRIVATE METHODS **/
-  // Private methods that are used internally within the component only
-
-  /**
-   * Handles the layered closing of layovers to prevent interference between multiple open layovers
-   * @param {Object} options - Options for hiding
-   * @param {boolean} options.internal - Whether this is an internal call
-   * @param {Event} options.event - The event that triggered the hide (optional)
-   * @returns {void}
-   * @private
-   */
-  _hideInLayers({ event = null } = {}) {
-    if (event) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
-
-    this._layerManager.hideLayer(this, () => this.hide());
-  }
-
-  _attachClickTracker() {
-    this._clickTracker = null;
-    this._clickTracker = new ClickTracker({
-      target: this.popover,
-      onOuterClick: (event) => this._hideInLayers({ event }),
-    });
-  }
-
-  _detachClickTracker() {
-    this._clickTracker?.disconnect();
-    this._clickTracker = null;
-  }
-
-  /**
-   * Matches the width of the popover to the trigger element's width or resets width style
-   * @returns {void}
-   */
-  _matchPopoverToTriggerWidth() {
-    // If this.matchWidth is false, make sure the width isn't being set and then exit
-    if (!this.matchWidth) {
-      this.popover.style.width = null;
-      return;
-    }
-
-    // Set the popover width to match the trigger element's width
-    const triggerEl = this._triggerElInSlot || this.button;
-    const { width } = triggerEl?.getBoundingClientRect() || {};
-    this.popover.style.width = width ? `${width}px` : "auto";
-  }
-
-  /**
-   * Calculates the type of the popover based on its behavior
-   * @param {string} behavior
-   * @returns {string} - The type of the popover, either "manual", "auto", or "hint"
-   */
-  _calcType(behavior) {
-    switch (true) {
-      case TOOLTIP_TYPES.includes(behavior):
-        return "hint";
-
-      case INPUT_TYPES.includes(behavior):
-      case DIALOG_TYPES.includes(behavior):
-      case DROPDOWN_TYPES.includes(behavior):
-        return "manual";
-
-      default:
-        return "manual"; // Default fallback
-    }
-  }
-
-  /**
-   * Centralized method to manage behavior transitions and state
-   * Called whenever behavior changes or when component needs reconfiguration
-   * Note that some of these calls are reinforced in the show and hide methods
-   * @param {string} newBehavior - The behavior to transition to
-   * @param {boolean} force - Whether to force reconfiguration even if behavior hasn't changed
-   * @returns {void}
-   * @private
-   */
-  _manageBehavior(newBehavior = this.behavior) {
-    // Set the new behavior state
-    this._currentBehaviorState = newBehavior;
-
-    // First, clean up any existing behavior
-    this._cleanupCurrentBehavior();
-
-    // Set the type based on the new behavior
-    this.type = this._calcType(newBehavior);
-
-    // Configure the new behavior
-    switch (newBehavior) {
-      case "input":
-      case "input-dropdown":
-      case "input-fullscreen":
-        this._bindToInput();
-        break;
-
-      case "dropdown":
-        // Only set up positioning if we're already shown
-        if (this.shown) this._attachPopoverPositioner();
-        break;
-
-      case "tooltip":
-        // Configure tooltip behavior
-        this.showOnHover = true;
-        this._bindHover();
-
-        // Only set up positioning if we're already shown
-        if (this.shown) this._attachPopoverPositioner();
-        break;
-
-      case "dialog":
-      case "dialog-fullscreen":
-        break;
-
-      default:
-        console.warn(`AuroLayover: Unknown behavior type "${newBehavior}"`);
-    }
-  }
-
-  /**
-   * Cleans up the current behavior implementation
-   * @returns {void}
-   * @private
-   */
-  _cleanupCurrentBehavior() {
-    // Detach all behavior-specific handlers
-    this._detachInput();
-    this._detachHover();
-    this._detachPopoverPositioner();
-    this._resetBodyScroll();
-    this._resetPositionStyles();
-
-    // Focus trap is specific to certain behaviors
-    this._detachFocusTrap();
-  }
-
-  /**
-   * Resets the position styles for the popover
-   * This is in case the popover was originally assigned a behavior that required positioning
-   * @returns {void}
-   * @private
-   */
-  _resetPositionStyles() {
-    if (!this.popover) return;
-    this.popover.style.margin = null;
-    this.popover.style.position = null;
-    this.popover.style.top = null;
-    this.popover.style.left = null;
-  }
-
-  /**
-   * Attaches a focus trap to the popover if necessary
-   * @returns {void}
-   * @private
-   */
-  _attachFocusTrap() {
-    if (this._shouldAttachFocusTrap) {
-      this._focusTrap = new FocusTrap(this.popover, true);
-      this._attachTabListener();
-    }
-  }
-
-  /**
-   * Detaches the existing focus trap if it exists
-   * @returns {void}
-   * @private
-   */
-  _detachFocusTrap() {
-    if (this._focusTrap) {
-      this._focusTrap.disconnect();
-      this._focusTrap = null;
-    }
-  }
-
-  _attachTabListener() {
-    this._tabListener = true;
-    this.addEventListener("keydown", this._handleFirstTab);
-  }
-
-  _detachTabListener() {
-    this.removeEventListener("keydown", this._handleFirstTab);
-    this._tabListener = false;
-  }
-
-  _handleFirstTab = (e) => {
-    if (e.key === "Tab") {
-      // Guard Clause: Ensure focus trap exists
-      if (!this._focusTrap) return;
-
-      // Get the direction of the tab (forward or backward)
-      const { shiftKey } = e;
-      const direction = shiftKey ? "backward" : "forward";
-
-      // Wait for the browser to try to control the focus, then override it
-      // This is needed to ensure the focus trap works consistently across browsers
-      setTimeout(() => {
-        // Shift focus according to the tab direction
-        direction === "forward"
-          ? this._focusTrap.focusFirstElement()
-          : this._focusTrap.focusLastElement();
-      });
-
-      // Detach the tab listener after the first tab event
-      this._detachTabListener();
-    }
-  };
-
-  /**
-   * Begins positioning the popover using the PopoverPositioner class
-   * @returns {void}
-   * @private
-   */
-  _attachPopoverPositioner() {
-    if (this._positioningTarget && this.popover) {
-      this._positioner = new PopoverPositioner({
-        target: this._positioningTarget,
-        popover: this.popover,
-        options: this._dropdownOptions,
-        onPlacementChange: this._onPlacementChange,
-      });
-    }
-  }
-
-  _onPlacementChange = ({ placement, arrowDirection, side }) => {
-    this.currentPlacement = placement;
-    this.currentArrowDirection = arrowDirection;
-    this.currentSide = side;
-  };
-
-  /**
-   * Cancels the positioning of the popover if it is currently active
-   * @returns {void}
-   * @private
-   */
-  _detachPopoverPositioner() {
-    this._resetPositionStyles();
-    if (this._positioner) {
-      this._positioner.disconnect();
-      this._positioner = null;
-    }
-  }
-
-  /**
-   * Checks for an input element in the trigger slot
-   * If no input is set, it tries to find the trigger element in the slot.
-   * If it finds a valid input element, it sets it as the input element.
-   * @returns {void}
-   * @private
-   * @throws {Error} If no input element is found after a timeout
-   */
-  _checkForInput() {
-    // If no input is set, try to find the trigger element in the slot
-    if (
-      !this.input &&
-      this._triggerElInSlot &&
-      this._triggerElInSlot.tagName.toLowerCase().match("input")
-    ) {
-      // Set it as the input element if we found a valid input element
-      this.input = this._triggerElInSlot;
-    }
-
-    // If we still don't have an input element, wait a bit to see if it appears
-    if (!this.input) {
-      setTimeout(() => {
-        // If we still don't have an input element, throw an error
-        if (!this.input) throw new Error(_NO_INPUT_ERROR);
-
-        // Otherwise, if we have an input element, bind it to the popover
-        this._bindToInput();
-      }, 50);
-    }
-  }
-
-  /**
-   * Binds the input element in the trigger slot to the popover's input behavior
-   * @returns {void}
-   * @private
-   */
-  _bindToInput() {
-    // Check for an input either set explicitly or in the trigger slot
-    // It's a little confusing, but this sets this.input to the input element instead of returning it
-    this._checkForInput();
-
-    if (this.input) {
-      // If you add an event listener here, you must also remove it in _detachInput
-      // Input change handling.
-      this.input.addEventListener("input", this._handleInputChange);
-
-      // Focus handling.
-      this.input.addEventListener("focus", this._handleInputFocus);
-
-      // Blur handling.
-      if (!["input-fullscreen"].includes(this.behavior)) {
-        this.input.addEventListener("blur", this._handleInputBlur);
-      }
-    }
-  }
-
-  /**
-   * Detaches the input element from the popover's input behavior
-   * @returns {void}
-   * @private
-   */
-  _detachInput() {
-    const { input } = this;
-    if (input) {
-      input.removeEventListener("focus", this._handleInputFocus);
-      input.removeEventListener("input", this._handleInputChange);
-      input.removeEventListener("blur", this._handleInputBlur);
-    }
-  }
-
-  /**
-   * Binds hover events to the positioning target element
-   * This is used for behaviors like tooltip where the popover should show on hover
-   * @returns {void}
-   * @private
-   */
-  _bindHover() {
-    const el = this._triggerElInSlot;
-    if (el) {
-      el.addEventListener("mouseover", this._handleOnHover);
-      el.addEventListener("mouseout", this._handleOnHoverLeave);
-    }
-  }
-
-  /**
-   * Detaches hover events from the positioning target element
-   * @returns {void}
-   * @private
-   */
-  _detachHover() {
-    const el = this._triggerElInSlot;
-    if (el) {
-      el.removeEventListener("mouseover", this._handleOnHover);
-      el.removeEventListener("mouseout", this._handleOnHoverLeave);
-    }
-  }
-
-  /**
-   * Disables the body scroll when the popover is shown
-   * @returns {void}
-   */
-  _disableBodyScroll() {
-    if (this._shouldDisableBodyScroll) {
-      document.documentElement.style.overflow = "hidden";
-    }
-  }
-
-  /**
-   * Resets the body scroll to its default state
-   * @returns {void}
-   */
-  _resetBodyScroll() {
-    document.documentElement.style.overflow = null;
   }
 
   /** EVENT HANDLERS AND DISPATCHERS **/
@@ -912,66 +463,6 @@ export class AuroLayover extends LitElement {
   }
 
   /**
-   * Checks if the input passes the value check based on the minimum input length
-   * @param {HTMLElement} input
-   * @returns {boolean}
-   * @private
-   */
-  _inputPassesValueCheck = (input) => {
-    // Check the input value against the minimum length
-    const { value } = input;
-
-    // If hideOnNoValue is not set, empty inputs are considered valid
-    if ((!value || !value.length) && !this.hideOnNoValue) return true;
-
-    // Do all other length checks
-    return (
-      (value && value.length >= this.minInputLength) ||
-      !this.minInputLength ||
-      this.minInputLength <= 0
-    );
-  };
-
-  /**
-   * Handles input changes, showing or hiding the popover based on the input value
-   * @param {Event} event
-   * @returns {void}
-   * @private
-   */
-  _handleInputChange = (event) => {
-    if (!this.showOnChange) return false;
-
-    const input = event.target;
-    this._inputPassesValueCheck(input) ? this.show() : this.hide();
-  };
-
-  /**
-   * Handles input focus events, showing the popover if all conditions are met
-   * @param {Event} event
-   * @returns {void}
-   * @private
-   */
-  _handleInputFocus = (event) => {
-    if (!this.showOnFocus) return false;
-
-    const input = event.target;
-    if (
-      // If the input has a minimum length and the value is valid and we should show on focus
-      this._inputPassesValueCheck(input)
-    )
-      this.show();
-  };
-
-  /**
-   * Handles input blur events, hiding the popover
-   * @returns {void}
-   * @private
-   */
-  _handleInputBlur = () => {
-    this.hide();
-  };
-
-  /**
    * Handles changes to the trigger slot, adjusting the type if necessary
    * @returns {void}
    * @private
@@ -981,7 +472,7 @@ export class AuroLayover extends LitElement {
     const nodes = this._triggerSlot.assignedNodes({ flatten: true });
 
     // Force auto state if the user passes something to the trigger slot
-    this._hasTriggerContent = !!(nodes.length > 0);
+    this.hasTriggerContent = !!(nodes.length > 0);
   }
 
   /**
@@ -1023,24 +514,6 @@ export class AuroLayover extends LitElement {
 
     // We don't need to handle closing state because all popovers are now manual so we are internally triggering all closes already
   }
-
-  /**
-   * Handles hover events on the trigger element, showing the popover if showOnHover is true
-   * @returns {void}
-   * @private
-   */
-  _handleOnHover = () => {
-    if (this.showOnHover) this.show();
-  };
-
-  /**
-   * Handles hover leave events on the trigger element, hiding the popover if showOnHover is true
-   * @returns {void}
-   * @private
-   */
-  _handleOnHoverLeave = () => {
-    if (this.showOnHover) this.hide();
-  };
 
   /** RENDER METHODS **/
   // These methods return the template for the component, including slots and elements
