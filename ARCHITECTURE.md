@@ -31,9 +31,17 @@ The AuroLayover component uses a **behavior-driven architecture** with **composa
 ### 1. Component Lifecycle
 
 ```javascript
-// When component shows/hides:
-component.show() → BehaviorManager.attachBehavior() → FeatureManager.manageFeatures("attach")
-component.hide() → BehaviorManager.detachBehavior() → FeatureManager.manageFeatures("detach")
+// When component shows:
+component.show() → BehaviorManager.show() → BehaviorManager.#manageBehavior() → 
+  currentBehavior.onShow() → FeatureManager.manageFeatures("attach")
+
+// When component hides:
+component.hide() → BehaviorManager.hide() → FeatureManager.manageFeatures("detach") →
+  currentBehavior.onHide()
+
+// Behavior changes:
+component.behavior = "new-behavior" → BehaviorManager.#manageBehavior() →
+  currentBehavior.cleanup() → new Behavior.setup()
 ```
 
 ### 2. Behavior Configuration Controls Features
@@ -60,11 +68,17 @@ get config() {
 The FeatureManager reads the behavior config and automatically activates the right features:
 
 ```javascript
-// FeatureManager.manageFeatures() internally:
-this.positioning.attach(behaviorConfig, context);      // if requiresPositioning: true
-this.focusTrap.attach(behaviorConfig, context);        // if requiresFocusTrap: true
-this.clickTracking.attach(behaviorConfig, context);    // if requiresClickTracker: true
-// ... etc
+// FeatureManager.#attachFeatures() internally:
+this.layerManagement.attach(behaviorConfig);    // if shouldCloseInLayers: true
+this.clickTracking.attach(behaviorConfig);      // if requiresClickTracker: true
+this.bodyScroll.attach(behaviorConfig);         // if requiresBodyScrollDisabled: true
+this.positioning.attach(behaviorConfig);        // if requiresPositioning: true
+this.focusTrap.attach(behaviorConfig);          // if requiresFocusTrap: true
+this.widthMatching.attach(behaviorConfig);      // if matchWidth: true
+this.focusManagement.attach(behaviorConfig);    // if shouldAdjustFocus: true
+
+// Each feature handles its own conditional logic
+// Features that don't apply simply return early
 ```
 
 ## Current Behaviors & Their Features
@@ -75,18 +89,53 @@ this.clickTracking.attach(behaviorConfig, context);    // if requiresClickTracke
 | **Dropdown** | ✅ | ✅ | ✅ | ❌ | ✅ | ✅ | ❌ |
 | **Dialog** | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
 | **Input** | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
-| **Fullscreen** | ❌ | ✅ | ❌ | ✅ | ✅ | ✅ | ❌ |
+| **Input-Fullscreen** | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
+| **Fullscreen** | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
+
+## LayerManager - Global Layer Stack Management
+
+The `LayerManager` class maintains a global stack of layover instances to ensure proper layering behavior and prevent conflicts between multiple layovers.
+
+### Key Features:
+
+- **Global Stack Management**: Uses `window.auroLayoverStack` to track all active layovers
+- **Top Layer Priority**: Only the topmost layer can be closed naturally
+- **Coordinated Closing**: Manages the closing sequence to prevent conflicts
+- **Layer Re-ordering**: Automatically moves re-shown layovers to the top
+
+### Core Methods:
+
+```javascript
+// Add layer to global stack (or move to top if already exists)
+layerManager.addLayer(layoverElement);
+
+// Remove layer from stack when hidden
+layerManager.removeLayer(layoverElement);
+
+// Attempt to hide layer with stack validation
+layerManager.hideLayer(layoverElement, hideCallback);
+```
+
+### How It Works:
+
+1. When a layover shows, it's added to the global stack
+2. If it's already in the stack, it's moved to the top (most recent)
+3. When hiding, only the top layer or explicitly closing layer can hide
+4. The closing layer is temporarily marked to prevent conflicts
+
+This ensures that nested or overlapping layovers behave predictably and users can only close the most recently opened layover.
 
 ## Available Features
 
 ### Core Features
-- **PositioningFeature** - Popover positioning relative to trigger using PopoverPositioner
-- **FocusTrapFeature** - Focus trapping within popover + tab key handling
-- **ClickTrackingFeature** - Outside click detection for closing
-- **BodyScrollFeature** - Document body scroll disable/enable
-- **LayerManagementFeature** - Integration with layering system for stacked layovers
-- **FocusManagementFeature** - Focus transitions between trigger and popover
-- **WidthMatchingFeature** - Match popover width to trigger width
+
+- **PositioningFeature** - Handles popover positioning relative to trigger using PopoverPositioner
+- **FocusTrapFeature** - Manages focus trapping within popover and tab key handling
+- **ClickTrackingFeature** - Detects outside clicks for closing layovers
+- **BodyScrollFeature** - Disables/enables document body scroll for modal behaviors
+- **LayerManagementFeature** - Integrates with LayerManager for stacked layover coordination
+- **FocusManagementFeature** - Manages focus transitions between trigger and popover
+- **WidthMatchingFeature** - Matches popover width to trigger width for input behaviors
 
 ## Creating a New Behavior
 
@@ -148,7 +197,14 @@ import { MyCustomBehavior } from "./MyCustomBehavior.js";
 
 export class BehaviorRegistry {
   static behaviors = new Map([
-    // ... existing behaviors
+    ["input", InputBehavior],
+    ["input-dropdown", InputBehavior],
+    ["input-fullscreen", InputFullscreenBehavior],
+    ["tooltip", TooltipBehavior],
+    ["dialog", DialogBehavior],
+    ["dialog-fullscreen", FullscreenBehavior],
+    ["dropdown", DropdownBehavior],
+    // Add your custom behavior
     ["my-custom", MyCustomBehavior],
   ]);
 }

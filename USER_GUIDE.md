@@ -80,12 +80,12 @@ import "@aurodesignsystem/auro-layover";
 
 - **Trigger**: Click to show, outside click or Escape to hide
 - **Features**: Focus trap, body scroll disabled, layer management, centered positioning
-- **Accessibility**: Uses `role="dialog"` pattern with `aria-modal`
+- **Accessibility**: Uses `role="dialog"` pattern with `aria-modal` under the hood - no need for extra implementation steps
 
 ```html
 <auro-layover behavior="dialog">
   <button slot="trigger">Open Dialog</button>
-  <div role="dialog" aria-labelledby="dialog-title" aria-modal="true">
+  <div>
     <h2 id="dialog-title">Confirm Action</h2>
     <p>Are you sure you want to proceed?</p>
     <button>Cancel</button>
@@ -100,7 +100,7 @@ import "@aurodesignsystem/auro-layover";
 
 - **Trigger**: Focus/input changes to show, blur to hide
 - **Features**: Positioning, width matching, input value monitoring
-- **Accessibility**: Uses `aria-autocomplete` and `role="listbox"` patterns
+- **Accessibility**: Currently requires extra implementation steps to ensure correct a11y UX
 
 ```html
 <auro-layover 
@@ -122,18 +122,54 @@ import "@aurodesignsystem/auro-layover";
 </auro-layover>
 ```
 
-### 📱 Fullscreen (`behavior="fullscreen"`)
+**Note**: `input-dropdown` is an alias for `input` behavior - both currently work identically, but the "-dropdown" version was included to give us a place to modify that specific behavior if needed in the future.
+
+### ⌨️📱 Input Fullscreen (`behavior="input-fullscreen"`)
+
+**Perfect for**: Mobile search overlays, complex input forms, mobile autocomplete
+
+- **Trigger**: Focus/input changes to show, blur or escape to hide
+- **Features**: Fullscreen overlay, focus trap, body scroll disabled, input monitoring
+- **Accessibility**: Uses `role="dialog"` with input patterns for fullscreen input experiences
+
+```html
+<auro-layover 
+  behavior="input-fullscreen" 
+  show-on-focus 
+  show-on-change>
+  <input 
+    slot="trigger" 
+    type="search" 
+    placeholder="Search destinations..."
+    aria-autocomplete="list">
+  <div role="dialog" aria-label="Search destinations" class="fullscreen-search">
+    <header>
+      <h2>Search Destinations</h2>
+      <button aria-label="Close search">✕</button>
+    </header>
+    <div class="search-content">
+      <ul role="listbox">
+        <li role="option">New York, NY</li>
+        <li role="option">Los Angeles, CA</li>
+        <li role="option">Chicago, IL</li>
+      </ul>
+    </div>
+  </div>
+</auro-layover>
+```
+
+### 📱 Fullscreen (`behavior="dialog-fullscreen"`)
 
 **Perfect for**: Mobile overlays, fullscreen forms, navigation drawers
 
 - **Trigger**: Click to show, Escape to hide
 - **Features**: Focus trap, body scroll disabled, layer management, fullscreen overlay
-- **Accessibility**: Uses `role="dialog"` with fullscreen presentation
+- **Accessibility**: Uses `role="dialog"` with fullscreen presentation out of the box, no extra implementation steps necessary for a11y
 
 ```html
-<auro-layover behavior="fullscreen">
+<auro-layover behavior="dialog-fullscreen">
   <button slot="trigger">☰ Menu</button>
-  <div role="dialog" aria-label="Main navigation">
+  <div>
     <header>
       <h1>Navigation</h1>
       <button aria-label="Close menu">✕</button>
@@ -155,7 +191,7 @@ import "@aurodesignsystem/auro-layover";
 
 | Attribute | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `behavior` | String | `"dropdown"` | Defines interaction pattern: `tooltip`, `dropdown`, `dialog`, `input`, `fullscreen` |
+| `behavior` | String | `"dropdown"` | Defines interaction pattern: `tooltip`, `dropdown`, `dialog`, `dialog-fullscreen`, `input`, `input-dropdown`, `input-fullscreen` |
 | `placement` | String | `"bottom"` | Preferred placement: `top`, `bottom`, `left`, `right` |
 | `offset` | Number | `auto` | Distance from trigger in pixels (auto-calculated from arrow size if not specified) |
 | `match-width` | Boolean | `false` | Match popover width to trigger width |
@@ -192,14 +228,14 @@ The element that triggers the layover to show/hide.
 **Supported Elements:**
 - `<button>` - Recommended for best accessibility
 - `<input>` - Required for input behavior
-- `<a>` - For link-triggered layovers
+- `<a>` - For link-triggered layovers - should be limited to "tooltip" behavior
 - Custom elements with proper event handling
 
 ### Default Slot (Content)
 The layover content that appears when triggered.
 
 ### Arrow Slot
-Custom arrow element that gets automatically rotated based on placement.
+Custom arrow element that gets automatically rotated based on placement. The default direction is down and rotation will occur automatically based on the layover position.
 
 ```html
 <auro-layover>
@@ -513,7 +549,7 @@ The `offset` attribute controls spacing between trigger and popover:
 ### Mobile Navigation
 
 ```html
-<auro-layover behavior="fullscreen">
+<auro-layover behavior="dialog-fullscreen">
   <button slot="trigger" class="mobile-menu-button" aria-label="Open menu">
     ☰
   </button>
